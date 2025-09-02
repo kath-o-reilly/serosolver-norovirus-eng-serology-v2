@@ -1,0 +1,126 @@
+
+[1] "Definitely updated"
+[1] "Definitely updated"
+[1] "Definitely updated"
+[1] "Definitely updated"
+[1] "Definitely updated"
+Chain 1 starting posterior probability: -52887.12
+Chain 1 starting likelihood: -51413.05
+Chain 1 starting prior probability: -1474.073
+Chain 4 starting posterior probability: -88810.73
+Chain 4 starting likelihood: -87348.41
+Chain 4 starting prior probability: -1462.319
+Chain 3 starting posterior probability: -56090.15
+Chain 3 starting likelihood: -54613.77
+Chain 3 starting prior probability: -1476.381
+Chain 5 starting posterior probability: -70304.77
+Chain 5 starting likelihood: -68828.19
+Chain 5 starting prior probability: -1476.582
+Chain 2 starting posterior probability: -42485.16
+Chain 2 starting likelihood: -40998.13
+Chain 2 starting prior probability: -1487.029
+Chain 5: 4.8% done.  Iteration: 10000. Estimated time remaining: 4 minutes
+Chain 3: 4.8% done.  Iteration: 10000. Estimated time remaining: 4 minutes
+Chain 1: 4.8% done.  Iteration: 10000. Estimated time remaining: 4 minutes
+Chain 2: 4.8% done.  Iteration: 10000. Estimated time remaining: 4 minutes
+Chain 4: 4.8% done.  Iteration: 10000. Estimated time remaining: 4 minutes
+Chain 3: 9.5% done.  Iteration: 20000. Estimated time remaining: 3.7 minutes
+Chain 5: 9.5% done.  Iteration: 20000. Estimated time remaining: 3.7 minutes
+Chain 1: 9.5% done.  Iteration: 20000. Estimated time remaining: 3.7 minutes
+Chain 4: 9.5% done.  Iteration: 20000. Estimated time remaining: 3.7 minutes
+Chain 2: 9.5% done.  Iteration: 20000. Estimated time remaining: 3.8 minutes
+Chain 1: 14% done.  Iteration: 30000. Estimated time remaining: 3.5 minutes
+Chain 3: 14% done.  Iteration: 30000. Estimated time remaining: 3.5 minutes
+Chain 5: 14% done.  Iteration: 30000. Estimated time remaining: 3.5 minutes
+Chain 4: 14% done.  Iteration: 30000. Estimated time remaining: 3.5 minutes
+Chain 2: 14% done.  Iteration: 30000. Estimated time remaining: 3.5 minutes
+Chain 3: 19% done.  Iteration: 40000. Estimated time remaining: 3.3 minutes
+Chain 1: 19% done.  Iteration: 40000. Estimated time remaining: 3.3 minutes
+Chain 5: 19% done.  Iteration: 40000. Estimated time remaining: 3.3 minutes
+Chain 4: 19% done.  Iteration: 40000. Estimated time remaining: 3.3 minutes
+Chain 2: 19% done.  Iteration: 40000. Estimated time remaining: 3.4 minutes
+Chain 3: 24% done.  Iteration: 50000. Estimated time remaining: 3.1 minutes
+Chain 1: 24% done.  Iteration: 50000. Estimated time remaining: 3.1 minutes
+Chain 5: 24% done.  Iteration: 50000. Estimated time remaining: 3.1 minutes
+Chain 4: 24% done.  Iteration: 50000. Estimated time remaining: 3.1 minutes
+Chain 2: 24% done.  Iteration: 50000. Estimated time remaining: 3.2 minutes
+Chain 1: 29% done.  Iteration: 60000. Estimated time remaining: 3 minutes
+Chain 3: 29% done.  Iteration: 60000. Estimated time remaining: 3 minutes
+Chain 5: 29% done.  Iteration: 60000. Estimated time remaining: 3 minutes
+Chain 4: 29% done.  Iteration: 60000. Estimated time remaining: 3 minutes
+Chain 2: 29% done.  Iteration: 60000. Estimated time remaining: 3 minutes
+Chain 1: 33% done.  Iteration: 70000. Estimated time remaining: 2.8 minutes
+Chain 3: 33% done.  Iteration: 70000. Estimated time remaining: 2.8 minutes
+Chain 5: 33% done.  Iteration: 70000. Estimated time remaining: 2.8 minutes
+Chain 4: 33% done.  Iteration: 70000. Estimated time remaining: 2.8 minutes
+Chain 2: 33% done.  Iteration: 70000. Estimated time remaining: 2.8 minutes
+Chain 1: 38% done.  Iteration: 80000. Estimated time remaining: 2.6 minutes
+Chain 3: 38% done.  Iteration: 80000. Estimated time remaining: 2.6 minutes
+Chain 2: 38% done.  Iteration: 80000. Estimated time remaining: 2.6 minutes
+Chain 4: 38% done.  Iteration: 80000. Estimated time remaining: 2.6 minutes
+Chain 5: 38% done.  Iteration: 80000. Estimated time remaining: 2.6 minutes
+Chain 1: 43% done.  Iteration: 90000. Estimated time remaining: 2.4 minutes
+Chain 3: 43% done.  Iteration: 90000. Estimated time remaining: 2.4 minutes
+Chain 4: 43% done.  Iteration: 90000. Estimated time remaining: 2.4 minutes
+Chain 2: 43% done.  Iteration: 90000. Estimated time remaining: 2.4 minutes
+Chain 5: 43% done.  Iteration: 90000. Estimated time remaining: 2.4 minutes
+Chain 1: 48% done.  Iteration: 100000. Estimated time remaining: 2.2 minutes
+Chain 3: 48% done.  Iteration: 100000. Estimated time remaining: 2.2 minutes
+Chain 2: 48% done.  Iteration: 100000. Estimated time remaining: 2.2 minutes
+Chain 4: 48% done.  Iteration: 100000. Estimated time remaining: 2.2 minutes
+Chain 5: 48% done.  Iteration: 100000. Estimated time remaining: 2.2 minutes
+Chain 1: 52% done.  Iteration: 110000. Estimated time remaining: 2 minutes
+Chain 3: 52% done.  Iteration: 110000. Estimated time remaining: 2 minutes
+Chain 4: 52% done.  Iteration: 110000. Estimated time remaining: 2 minutes
+Chain 2: 52% done.  Iteration: 110000. Estimated time remaining: 2 minutes
+Chain 5: 52% done.  Iteration: 110000. Estimated time remaining: 2 minutes
+Chain 1: 57% done.  Iteration: 120000. Estimated time remaining: 1.8 minutes
+Chain 3: 57% done.  Iteration: 120000. Estimated time remaining: 1.8 minutes
+Chain 2: 57% done.  Iteration: 120000. Estimated time remaining: 1.8 minutes
+Chain 4: 57% done.  Iteration: 120000. Estimated time remaining: 1.8 minutes
+Chain 5: 57% done.  Iteration: 120000. Estimated time remaining: 1.8 minutes
+Chain 1: 62% done.  Iteration: 130000. Estimated time remaining: 1.6 minutes
+Chain 3: 62% done.  Iteration: 130000. Estimated time remaining: 1.6 minutes
+Chain 4: 62% done.  Iteration: 130000. Estimated time remaining: 1.6 minutes
+Chain 2: 62% done.  Iteration: 130000. Estimated time remaining: 1.6 minutes
+Chain 5: 62% done.  Iteration: 130000. Estimated time remaining: 1.6 minutes
+Chain 1: 67% done.  Iteration: 140000. Estimated time remaining: 1.4 minutes
+Chain 3: 67% done.  Iteration: 140000. Estimated time remaining: 1.4 minutes
+Chain 2: 67% done.  Iteration: 140000. Estimated time remaining: 1.4 minutes
+Chain 4: 67% done.  Iteration: 140000. Estimated time remaining: 1.4 minutes
+Chain 5: 67% done.  Iteration: 140000. Estimated time remaining: 1.4 minutes
+Chain 1: 71% done.  Iteration: 150000. Estimated time remaining: 1.2 minutes
+Chain 3: 71% done.  Iteration: 150000. Estimated time remaining: 1.2 minutes
+Chain 4: 71% done.  Iteration: 150000. Estimated time remaining: 1.2 minutes
+Chain 2: 71% done.  Iteration: 150000. Estimated time remaining: 1.2 minutes
+Chain 5: 71% done.  Iteration: 150000. Estimated time remaining: 1.2 minutes
+Chain 1: 76% done.  Iteration: 160000. Estimated time remaining: 1 minutes
+Chain 3: 76% done.  Iteration: 160000. Estimated time remaining: 1 minutes
+Chain 4: 76% done.  Iteration: 160000. Estimated time remaining: 1 minutes
+Chain 2: 76% done.  Iteration: 160000. Estimated time remaining: 1 minutes
+Chain 5: 76% done.  Iteration: 160000. Estimated time remaining: 1 minutes
+Chain 1: 81% done.  Iteration: 170000. Estimated time remaining: 48 seconds
+Chain 3: 81% done.  Iteration: 170000. Estimated time remaining: 48 seconds
+Chain 4: 81% done.  Iteration: 170000. Estimated time remaining: 48 seconds
+Chain 2: 81% done.  Iteration: 170000. Estimated time remaining: 48 seconds
+Chain 5: 81% done.  Iteration: 170000. Estimated time remaining: 48 seconds
+Chain 1: 86% done.  Iteration: 180000. Estimated time remaining: 36 seconds
+Chain 3: 86% done.  Iteration: 180000. Estimated time remaining: 36 seconds
+Chain 4: 86% done.  Iteration: 180000. Estimated time remaining: 36 seconds
+Chain 2: 86% done.  Iteration: 180000. Estimated time remaining: 36 seconds
+Chain 5: 86% done.  Iteration: 180000. Estimated time remaining: 36 seconds
+Chain 1: 90% done.  Iteration: 190000. Estimated time remaining: 24 seconds
+Chain 3: 90% done.  Iteration: 190000. Estimated time remaining: 24 seconds
+Chain 4: 90% done.  Iteration: 190000. Estimated time remaining: 24 seconds
+Chain 5: 90% done.  Iteration: 190000. Estimated time remaining: 24 seconds
+Chain 2: 90% done.  Iteration: 190000. Estimated time remaining: 24 seconds
+Chain 1: 95% done.  Iteration: 200000. Estimated time remaining: 12 seconds
+Chain 3: 95% done.  Iteration: 200000. Estimated time remaining: 12 seconds
+Chain 4: 95% done.  Iteration: 200000. Estimated time remaining: 12 seconds
+Chain 5: 95% done.  Iteration: 200000. Estimated time remaining: 12 seconds
+Chain 2: 95% done.  Iteration: 200000. Estimated time remaining: 12 seconds
+Chain 1: 100% done.  Iteration: 210000. Estimated time remaining: 0 seconds
+Chain 3: 100% done.  Iteration: 210000. Estimated time remaining: 0 seconds
+Chain 4: 100% done.  Iteration: 210000. Estimated time remaining: 0 seconds
+Chain 5: 100% done.  Iteration: 210000. Estimated time remaining: 0 seconds
+Chain 2: 100% done.  Iteration: 210000. Estimated time remaining: 0 seconds

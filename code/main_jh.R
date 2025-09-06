@@ -1,0 +1,10 @@
+setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2")
+
+for(i in 1:6){
+  run_number <- i
+  source("main_script_v4.R")
+  
+  rm(list=ls())
+  gc()
+}
+source("code/generate_tables_exponential.R")

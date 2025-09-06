@@ -1,0 +1,7 @@
+﻿sim_number,cart,data,rho,output_name,sim_type,offset_params,restrictions_par,restrictions_value
+1,debbink,ic_50,no,ic50_real,norovirus_true,FALSE,NA,NA
+2,kendra,ic_50,no,ic50_kendra,norovirus_true,FALSE,NA,NA
+3,debbink,both,no,both_real,norovirus_true,FALSE,NA,NA
+4,kendra,both,no,both_kendra,norovirus_true,FALSE,NA,NA
+5,debbink,avidity,no,avid_debbink,norovirus_true,FALSE,NA,NA
+6,kendra,avidity,no,avid_kendra,norovirus_true,FALSE,NA,NA

@@ -48,7 +48,7 @@ mcmc_pars <- c("save_block"=1000,
                "thin"=500,
                "thin_inf_hist"=2500,
                "iterations"=500000,
-               "adaptive_iterations"=200000)
+               "adaptive_iterations"=200000)*2
 
 
 cart_data <- read_in$cart[run_number]  #"Debbink" #"Kendra" #

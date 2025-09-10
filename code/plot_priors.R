@@ -72,7 +72,33 @@ p_lhs | p_rhs
 
 ggsave("figures/prior_exponential_traj.png",p_lhs | p_rhs,height=5,width=7)
 
+## Just IC50
+p_lhs_ic50 <- ggplot(traj %>% filter(Assay == "IC50")) +
+  geom_ribbon(aes(x=name,ymin=lower,ymax=upper,fill=Assay),alpha=0.25) +
+  geom_ribbon(aes(x=name,ymin=lower50,ymax=upper50,fill=Assay),alpha=0.5) +
+  geom_line(aes(x=name,y=mean,col=Assay)) +
+  #geom_line(data=draws %>% filter(samp %in% 1:100), aes(x=name,y=value,group=samp,col=Assay),alpha=0.25)+
+  labs(x='Time since boost (years)',y='Antibody level') +
+  theme_use +
+  scale_x_continuous(breaks=seq(0,10,by=2)) +
+  scale_y_continuous(breaks=seq(0,16,by=2)) +
+  coord_cartesian(ylim=c(0,16)) +
+  theme(legend.position="none")+
+  ggtitle("Prior median/50% quantiles/95% quantiles")
+p_rhs_ic50 <- ggplot(traj%>% filter(Assay == "IC50")) +
+  #geom_ribbon(aes(x=name,ymin=lower,ymax=upper,fill=Assay),alpha=0.25) +
+  #geom_ribbon(aes(x=name,ymin=lower50,ymax=upper50,fill=Assay),alpha=0.5) +
+  #geom_line(aes(x=name,y=mean,col=Assay)) +
+  geom_line(data=draws %>% filter(samp %in% 1:100,Assay=="IC50"), aes(x=name,y=value,group=samp,col=Assay),alpha=0.25)+
+  labs(x='Time since boost (years)',y='Antibody level') +
+  theme_use+
+  scale_x_continuous(breaks=seq(0,10,by=2)) +
+  scale_y_continuous(breaks=seq(0,16,by=2)) +
+  coord_cartesian(ylim=c(0,16)) +
+  theme(legend.position="none")+
+  ggtitle("Prior draws")
 
+ggsave("figures/prior_exponential_traj_ic50.png",p_lhs_ic50 | p_rhs_ic50,height=3,width=7)
 
 ## Linear model
 N <- 1000
@@ -135,4 +161,34 @@ p_rhs <- ggplot(traj) +
 
 p_lhs | p_rhs
 
+
+
 ggsave("figures/prior_linear_traj.png",p_lhs | p_rhs,height=5,width=7)
+
+## Just IC50
+p_lhs_ic50 <- ggplot(traj %>% filter(Assay == "IC50")) +
+  geom_ribbon(aes(x=name,ymin=lower,ymax=upper,fill=Assay),alpha=0.25) +
+  geom_ribbon(aes(x=name,ymin=lower50,ymax=upper50,fill=Assay),alpha=0.5) +
+  geom_line(aes(x=name,y=mean,col=Assay)) +
+  #geom_line(data=draws %>% filter(samp %in% 1:100), aes(x=name,y=value,group=samp,col=Assay),alpha=0.25)+
+  labs(x='Time since boost (years)',y='Antibody level') +
+  theme_use +
+  scale_x_continuous(breaks=seq(0,10,by=2)) +
+  scale_y_continuous(breaks=seq(0,16,by=2)) +
+  coord_cartesian(ylim=c(0,16)) +
+  theme(legend.position="none")+
+  ggtitle("Prior median/50% quantiles/95% quantiles")
+p_rhs_ic50 <- ggplot(traj%>% filter(Assay == "IC50")) +
+  #geom_ribbon(aes(x=name,ymin=lower,ymax=upper,fill=Assay),alpha=0.25) +
+  #geom_ribbon(aes(x=name,ymin=lower50,ymax=upper50,fill=Assay),alpha=0.5) +
+  #geom_line(aes(x=name,y=mean,col=Assay)) +
+  geom_line(data=draws %>% filter(samp %in% 1:100,Assay=="IC50"), aes(x=name,y=value,group=samp,col=Assay),alpha=0.25)+
+  labs(x='Time since boost (years)',y='Antibody level') +
+  theme_use+
+  scale_x_continuous(breaks=seq(0,10,by=2)) +
+  scale_y_continuous(breaks=seq(0,16,by=2)) +
+  coord_cartesian(ylim=c(0,16)) +
+  theme(legend.position="none")+
+  ggtitle("Prior draws")
+
+ggsave("figures/prior_linear_traj_ic50.png",p_lhs_ic50 | p_rhs_ic50,height=3,width=7)

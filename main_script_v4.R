@@ -16,6 +16,7 @@ library(tidyverse)
 library(cowplot)
 library(patchwork)
 library(serosolver)
+library(RColorBrewer)
 ## Load serosolver locally, or load as proper package after installation
 #Rcpp::compileAttributes("~/Documents/GitHub/serosolver")
 #devtools::document("~/Documents/GitHub/serosolver")
@@ -33,10 +34,10 @@ read_in <- read_csv("serosolver_norovirus_input_JH.csv")
 ## run_number <- 3
 
 run_name <- read_in$output_name[run_number] #"sim_avid_real"
-main_wd <- paste0("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/local_data_exponential/",read_in$sim_type[run_number]) #norovirus_true"
+main_wd <- paste0("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/local_data_exponential_age/",read_in$sim_type[run_number]) #norovirus_true"
 chain_wd <- paste0(main_wd,"/chains/",run_name)
 save_wd <- paste0(main_wd,"/figures/",run_name)
-save_wd_results <- paste0("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2","/results_exponential/",run_name)
+save_wd_results <- paste0("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2","/results_exponential_age/",run_name)
 save_wd_old <- paste0("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/local_data/",read_in$sim_type[run_number],"/figures/",run_name)
 data_folder = "~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/Data/"
 
@@ -48,7 +49,13 @@ mcmc_pars <- c("save_block"=1000,
                "thin"=500,
                "thin_inf_hist"=2500,
                "iterations"=500000,
-               "adaptive_iterations"=200000)*2
+               "adaptive_iterations"=200000)/2
+
+#mcmc_pars <- c("save_block"=100,
+#               "thin"=5,
+#               "thin_inf_hist"=25,
+#               "iterations"=5000,
+#               "adaptive_iterations"=2000)
 
 cart_data <- read_in$cart[run_number]  #"Debbink" #"Kendra" #
 # analysis level
@@ -67,6 +74,19 @@ theme_use <- theme_classic() + theme(axis.title = element_text(size=8),
                                      plot.margin=margin(5,5,5,5),
                                      legend.margin=margin(0,0,0,0),
                                      legend.box.margin=margin(-10,-10,-10,-10)) # Reduce spacing around plot and legend
+
+strains <- c("Grimsby 1996","Farmington Hills\n 2002","Hunter 2004", "Den Haag 2006","New Orleans 2009","Sydney\n 2012")
+strain_colors_pal <- brewer.pal(n = 9, name = 'Set1')
+strain_colors <- c("Grimsby 1996"="burlywood1",
+                   "Farmington Hills\n 2002"=strain_colors_pal[1],
+                   "Hunter 2004"=strain_colors_pal[3], 
+                   "Den Haag 2006"=strain_colors_pal[4],
+                   "New Orleans 2009"=strain_colors_pal[8],
+                   "Sydney\n 2012"=strain_colors_pal[9])
+strain_colors_short <- c("FH-2002"=strain_colors_pal[1],
+                         "DH-2006"=strain_colors_pal[4],
+                         "NO-2009"=strain_colors_pal[8],
+                         "SY-2012"=strain_colors_pal[9])
 
 # *** load some simulated data ***
 #antibody_data <- read_csv(paste0("/Users/lsh1603970/Documents/GitHub/serosolver-norovirus-eng-serology-v2/local_data/norovirus_test/figures/sim_two_biomarker/","sim_two_biomarker_titre_data.csv"))
@@ -306,9 +326,18 @@ if(analysis != "avidity"){
 antibody_data <- as.data.frame(antibody_data)
 antibody_data <- antibody_data %>% arrange(individual,sample_time,biomarker_id,biomarker_group)
 
+## Try age-stratification on infections
+par_tab[par_tab$names == "infection_model_prior_shape1","stratification"] <- "age_group"
+par_tab[par_tab$names == "infection_model_prior_shape2","stratification"] <- "age_group"
+
+demography <- antibody_data %>% select(individual,birth) %>% distinct() %>% expand_grid(time=unique(antigenic_map$inf_times)) %>% arrange(individual, time) %>% mutate(age = time - birth) %>% 
+  mutate(age_group = if_else(age >= 5, "5+",if_else(age <= 0, "0", as.character(age)))) %>% as.data.frame() %>% mutate(age_group = as.numeric(as.factor(age_group))-1)%>% filter(time >= min(antibody_data$birth))
+antigenic_map <- antigenic_map %>% filter(inf_times >= min(antibody_data$birth))
+
 if(rerun_mcmc){
   res <- serosolver(par_tab, 
                     antibody_data, 
+                    demographics=demography,
                     #possible_exposure_times = possible_exposure_times,
                     antigenic_map=antigenic_map,
                     prior_func=prior_func,
@@ -559,6 +588,7 @@ antibody_data_expanded <- expand_grid(serosolver_settings$antibody_data %>% sele
 ## Get predicted antibody levels at all times
 ## Get antibody titre predicted pre-boosts
 predicted_titers_all <- get_antibody_level_predictions(chains$theta_chain,chains$inf_chain,
+                                                       demographics=demography,
                                                        antibody_data=antibody_data_expanded,
                                                        individuals=unique(serosolver_settings$antibody_data$individual),
                                                        antigenic_map=serosolver_settings$antigenic_map,#tmp_map,
@@ -690,15 +720,15 @@ population_mean_titres <- antibody_data_expanded_long_all %>%
   summarize(mean_titre1 = mean(mean_titre),lower=quantile(mean_titre,0.025),upper=quantile(mean_titre,0.975)) %>%
   filter(biomarker_id %in% c(2002,2006,2009,2012))
 
-noro_key <- c("2002"="FY-2002","2006"="DH-2006","2009"="NO-2009","2012"="SY-2012")
+noro_key <- c("2002"="FH-2002","2006"="DH-2006","2009"="NO-2009","2012"="SY-2012")
 population_mean_titres$strain <- noro_key[as.character(population_mean_titres$biomarker_id)]
 population_mean_titres <- bind_rows(population_mean_titres,population_mean_circulating_titre)
-population_mean_titres$strain <- factor(population_mean_titres$strain, levels=c("FY-2002","DH-2006","NO-2009","SY-2012","Matched to \ncirculating virus"))
+population_mean_titres$strain <- factor(population_mean_titres$strain, levels=c("FH-2002","DH-2006","NO-2009","SY-2012","Matched to \ncirculating virus"))
 p_all_titre_mean <- ggplot(population_mean_titres) + 
   geom_ribbon(aes(x=sample_time,ymin=lower,ymax=upper,fill=strain,group=strain),alpha=0.25) +
   geom_line(aes(x=sample_time,y=mean_titre1,col=strain)) +
-  scale_fill_viridis_d(name="Norovirus strain") +
-  scale_color_viridis_d(name="Norovirus strain") +
+  scale_fill_manual(name="Norovirus strain",values=c(strain_colors_short,"Matched to \ncirculating virus"="blue")) +
+  scale_color_manual(name="Norovirus strain",values=c(strain_colors_short,"Matched to \ncirculating virus"="blue")) +
   theme_classic() +
   xlab("Norovirus year") +
   ylab("Mean log2 IC50 titre") +
@@ -762,6 +792,7 @@ ggsave(paste0(save_wd,"/predicted_observations.pdf"),p_preds,height=4,width=7,un
 
 if(analysis == "both"){
 p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_data=expand_grid(individual=1,sample_time=seq(2001,2012,by=1),biomarker_id=unique(antibody_data$biomarker_id),biomarker_group=unique(antibody_data$biomarker_group)),demographics=NULL,settings=serosolver_settings,by_group=FALSE,nsamp=100,
+                                                   par_tab=par_tab %>% mutate(stratification=NA),
                               antigenic_map=antigenic_map %>% filter(inf_times >= 2001),possible_exposure_times=seq(2001,2012,by=1),
                               solve_times=seq(2001,2012,by=0.1)) + facet_grid(paste0("Norovirus strain: ", biomarker_id)~if_else(biomarker_group == 1, "1. IC50","2. Avidity")) + coord_cartesian(ylim=c(0,6)) +
   ggtitle("Antibody kinetics assuming single infection in 2001") + theme(legend.position="none")
@@ -773,6 +804,7 @@ p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_d
                                                                                 biomarker_id=unique(antigenic_map$inf_times),
                                                                                 biomarker_group=unique(antibody_data$biomarker_group)),
                                                       demographics=NULL,settings=serosolver_settings,by_group=FALSE,nsamp=100,
+                                                      par_tab=par_tab %>% mutate(stratification=NA),
                                                       antigenic_map=antigenic_map,
                                                       solve_times=seq(2000,2012,by=1),
                                                       set_infections = c(2001,2010))
@@ -818,6 +850,7 @@ p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_d
 } else {
   p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_data=expand_grid(individual=1,sample_time=seq(2002,2012,by=1),biomarker_id=unique(antibody_data$biomarker_id),biomarker_group=unique(antibody_data$biomarker_group)),demographics=NULL,settings=serosolver_settings,by_group=FALSE,nsamp=100,
                                 antigenic_map=antigenic_map %>% filter(inf_times >= 2002),possible_exposure_times=seq(2002,2012,by=1),
+                                par_tab=par_tab %>% mutate(stratification=NA),
                                 solve_times=seq(2002,2012,by=0.1)) + facet_wrap(~paste0("Norovirus strain: ", biomarker_id)) + coord_cartesian(ylim=c(0,6)) +
     ggtitle("Antibody kinetics assuming single infection in 2001") + theme(legend.position="none")
   ggsave(paste0(save_wd,"/estimated_antibody_model.pdf"),p_estimated_model,height=8,width=7,units="in",dpi=300)
@@ -833,8 +866,8 @@ p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_d
     theme_classic() +
     xlab("Time since infection (years)") +
     ylab("log2 IC50") +
-    scale_color_viridis_d(name="Measured strain") +
-    scale_fill_viridis_d(name="Measured strain") +
+    scale_color_manual(name="Measured strain",values=strain_colors_short) +
+    scale_fill_manual(name="Measured strain",values=strain_colors_short) +
     scale_x_continuous(limits=c(2002,2012), breaks=seq(2002,2012,by=2),labels=seq(0,10,by=2)) +
     theme(legend.position=c(0.8,0.8),plot.tag=element_text(face="bold")) +
     labs(tag="A")
@@ -846,6 +879,7 @@ p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_d
   for(strain in c(2002,2006,2009,2012)){
   tmp_dat <- bind_rows(tmp_dat, plot_estimated_antibody_model(chains$theta_chain,antibody_data=expand_grid(individual=1,sample_time=seq(strain,strain+10,by=0.1),biomarker_id=unique(antibody_data$biomarker_id),biomarker_group=unique(antibody_data$biomarker_group)),demographics=NULL,settings=serosolver_settings,by_group=FALSE,nsamp=100,
                                                      antigenic_map=antigenic_map,
+                                                     par_tab=par_tab %>% mutate(stratification=NA),
                                                      solve_times=seq(strain,strain+10,by=0.1),set_infections = c(strain))$data %>% mutate("Infection strain"=strain))
   }
   
@@ -864,8 +898,8 @@ p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_d
     theme_classic() +
     xlab("Time since infection (years)") +
     ylab("log2 IC50") +
-    scale_color_viridis_d(name="Measured strain") +
-    scale_fill_viridis_d(name="Measured strain") +
+    scale_color_manual(name="Measured strain",values=strain_colors_short) +
+    scale_fill_manual(name="Measured strain",values=strain_colors_short) +
     scale_x_continuous(breaks=seq(0,10,by=2)) +
     theme(legend.position=c(0.8,0.8),plot.tag=element_text(face="bold")) +
     facet_wrap(~label) +
@@ -881,6 +915,7 @@ p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_d
                                                       demographics=NULL,settings=serosolver_settings,by_group=FALSE,nsamp=100,
                                                       antigenic_map=antigenic_map,
                                                       solve_times=seq(2000,2012,by=1),
+                                                      par_tab=par_tab %>% mutate(stratification=NA),
                                                       set_infections = c(2001,2010))
   tmp_dat <- p_estimated_model2$data %>% select(biomarker_group,biomarker_id,sample_time,median)
   tmp_dat2 <- tmp_dat %>% mutate(sample_time = sample_time + 1)
@@ -913,6 +948,7 @@ p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_d
                                                                                 biomarker_group=unique(antibody_data$biomarker_group)),
                                                       demographics=NULL,settings=serosolver_settings,by_group=FALSE,nsamp=100,
                                                       antigenic_map=antigenic_map,
+                                                      par_tab=par_tab %>% mutate(stratification=NA),
                                                       solve_times=seq(2000,2015,by=0.1),
                                                       set_infections = c(2002,2010))
   tmp_dat <- p_estimated_model3$data %>% select(biomarker_group,biomarker_id,sample_time,median,lower,upper)
@@ -933,8 +969,8 @@ p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_d
     geom_vline(xintercept=2012,linetype="dotted") +
     scale_y_continuous(expand=c(0,0),limits=c(0,8),breaks=seq(0,8,by=1)) +
     scale_x_continuous(breaks=seq(2000,2015,by=1)) +
-    scale_color_viridis_d(name="Norovirus strain") +
-    scale_fill_viridis_d(name="Norovirus strain") +
+    scale_color_manual(name="Norovirus strain",values=strain_colors_short) +
+    scale_fill_manual(name="Norovirus strain",values=strain_colors_short) +
     ylab("Antibody level (log2 IC50)") +
     xlab("Date") +
     theme_use +
@@ -944,7 +980,7 @@ p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_d
   
   p_schematic_data <- ggplot(tmp_dat %>% filter(sample_time==2012)) +
     geom_bar(aes(x=strain,y=median,fill=strain),stat="identity")+
-    scale_fill_viridis_d(name="Norovirus strain") +
+    scale_fill_manual(name="Norovirus strain",values=strain_colors_short) +
     scale_y_continuous(expand=c(0,0),limits=c(0,4),breaks=seq(0,4,by=1)) +
     ylab("Antibody level (log2 IC50)") +
     xlab("Norovirus strain") +
@@ -1009,12 +1045,13 @@ n_inf_chain_i <- inf_chain[, list(V1 = sum(x)), by = key(inf_chain)]
 colnames(n_inf_chain_i)[1] <- "individual"
 
 ## Merge with year of birth to calculate age
-titre_dat <- antibody_data_keep %>% select(individual,birth) %>% distinct() %>% as.data.table()
+titre_dat <- antibody_data_keep %>% select(individual,birth,sample_time) %>% distinct() %>% group_by(individual,birth) %>% filter(sample_time == max(sample_time)) %>% ungroup() %>% as.data.table()
 #titre_dat <- data.table(antibody_data_keep %>% filter(biomarker_id == 2002 & biomarker_group == 1)) # otherwise each there several times
 setkey(titre_dat, "individual")
 titre_dat <- left_join(titre_dat,n_inf_chain_i ) # not all have infections NAs
 
 titre_dat <- titre_dat %>% filter(j >= birth) ## Only count draws where individual is alive
+titre_dat <- titre_dat %>% filter(j <= sample_time) ## Only count draws where individual is alive
 titre_dat <- titre_dat %>% mutate(age = j - birth) ## Calculate age in years at each time point
 titre_dat <- titre_dat %>% mutate(age=if_else(age >= 6,6,age)) ## Merge over 6
 
@@ -1023,8 +1060,8 @@ infections_by_age <- titre_dat %>% group_by(age, samp_no,chain_no) %>% dplyr::su
 infections_by_age_label <- infections_by_age %>% ungroup() %>% select(age, N) %>% distinct()
 p_age1 <- ggplot(infections_by_age) + 
   geom_violin(aes(x=age,group=age,y=ar),scale="width",draw_quantiles = c(0.025,0.5,0.975),fill="grey70") +
-  geom_text(data=infections_by_age_label,aes(x=age,y=0.3,label=paste0("N=",N)),size=3) +
-  scale_y_continuous(limits=c(0,0.35),expand=c(0,0),breaks=seq(0,0.3,by=0.1)) +
+  geom_text(data=infections_by_age_label,aes(x=age,y=0.35,label=paste0("N=",N)),size=3) +
+  scale_y_continuous(limits=c(0,0.4),expand=c(0,0),breaks=seq(0,0.4,by=0.1)) +
   theme_classic() +
   ylab("Attack rate by year of age") +
   xlab("Age (years)") 
@@ -1034,8 +1071,8 @@ infections_by_age_2006 <- titre_dat %>% filter(j > 2005) %>% group_by(age, samp_
 infections_by_age_label_2006 <- infections_by_age %>% ungroup() %>% select(age, N) %>% distinct()
 p_age2 <- ggplot(infections_by_age_2006) + 
   geom_violin(aes(x=age,group=age,y=ar),scale="width",draw_quantiles = c(0.025,0.5,0.975),fill="grey70") +
-  geom_text(data=infections_by_age_label_2006,aes(x=age,y=0.3,label=paste0("N=",N)),size=3) +
-  scale_y_continuous(limits=c(0,0.35),expand=c(0,0),breaks=seq(0,0.3,by=0.1)) +
+  geom_text(data=infections_by_age_label_2006,aes(x=age,y=0.35,label=paste0("N=",N)),size=3) +
+  scale_y_continuous(limits=c(0,0.4),expand=c(0,0),breaks=seq(0,0.4,by=0.1)) +
   theme_classic() +
   ylab("Attack rate by year of age") +
   xlab("Age (years)") +

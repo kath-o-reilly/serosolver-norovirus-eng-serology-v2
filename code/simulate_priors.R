@@ -153,15 +153,15 @@ prior_func_linear_ic50 <- function(par_tab){
     ## You can add your own priors on the model parameters here, for example, this places a log-normal prior with mean 2 on the boost_short parameter:
     ## Priors for biomarker group 1
 
-      p1a <- sum(dlnorm(pars[which(par_names == "boost_long" & par_biomarker_groups == 1)],log(3), 0.75,log=TRUE)) # Looser prior
-      p5a <- sum(dbeta(pars[which(par_names == "cr_long"& par_biomarker_groups == 1)],1, 10,log=TRUE) ) # Skewed toward high cross-reactivity
-      p2a <- sum(dlnorm(pars[which(par_names == "boost_short"& par_biomarker_groups == 1)],log(3), 0.75,log=TRUE)) # Looser prior
+      p1a <- sum(dlnorm(pars[which(par_names == "boost_long" & par_biomarker_groups == 1)],log(4), 0.75,log=TRUE)) # Looser prior
+      p5a <- sum(dbeta(pars[which(par_names == "cr_long"& par_biomarker_groups == 1)],1, 20,log=TRUE) ) # Skewed toward high cross-reactivity
+      p2a <- sum(dlnorm(pars[which(par_names == "boost_short"& par_biomarker_groups == 1)],log(2), 0.75,log=TRUE)) # Looser prior
       p3a <- sum(dbeta(pars[which(par_names == "wane_short"& par_biomarker_groups == 1)],1, 1,log=TRUE) )
   
     #p3a <- sum(dlnorm(pars[which(par_names == "wane_short"& par_biomarker_groups == 1)],log(0.5), 1,log=TRUE) )
     
     p4a <- sum(dbeta(pars[which(par_names == "antigenic_seniority"& par_biomarker_groups == 1)],1, 1,log=TRUE))
-    p6a <- sum(dbeta(pars[which(par_names == "cr_short"& par_biomarker_groups == 1)],1, 10,log=TRUE))  # Skewed toward high cross-reactivity
+    p6a <- sum(dbeta(pars[which(par_names == "cr_short"& par_biomarker_groups == 1)],1, 20,log=TRUE))  # Skewed toward high cross-reactivity
     
     #p5a <- sum(dlnorm(pars[which(par_names == "cr_long"& par_biomarker_groups == 1)],log(0.1), 1.25,log=TRUE) ) # Skewed toward high cross-reactivity
     #p6a <- sum(dlnorm(pars[which(par_names == "cr_short"& par_biomarker_groups == 1)],log(0.1), 1.25,log=TRUE))  # Skewed toward high cross-reactivity

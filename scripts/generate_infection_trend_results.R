@@ -10,8 +10,8 @@ setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/")
 source("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/code/adjust_age_distribution.R", echo=TRUE)
 
 ## Read in attack rates from ic50 Debbink scenario
-serosolver_ar <- read_csv("results_linear/ic50_kendra_attack_rates.csv")
-inf_chains <- load_infection_chains(location="local_data_exponential_age/norovirus_true/chains/ic50_real/",burnin = 100000)
+serosolver_ar <- read_csv("results_exponential/ic50_real_attack_rates.csv")
+inf_chains <- load_infection_chains(location="local_data_exponential/norovirus_true/chains/ic50_real/",burnin = 300000)
 
 ## Read in our data
 antibody_data <- read_csv("Data/titre_dat_norovirus_age_avidity.csv")
@@ -643,7 +643,7 @@ inf_chain_cumu_summary <- inf_chain_cumu %>%
   summarize(prop = sum(cumu_infection)/n(),N=n()) %>%
   group_by(age) %>% summarize(med=median(prop),lower=quantile(prop,0.025),upper=quantile(prop,0.975),N=median(N))
 
-p_cumu_by_age <- ggplot(inf_chain_cumu_summary) +
+p_cumu_by_age_2007 <- ggplot(inf_chain_cumu_summary) +
   geom_ribbon(aes(x=age,ymin=lower,ymax=upper),fill="grey80") +
   geom_line(aes(x=age,y=med),col="grey40") +
   theme_use +
@@ -652,7 +652,7 @@ p_cumu_by_age <- ggplot(inf_chain_cumu_summary) +
   scale_y_continuous(limits=c(0,1),breaks=seq(0,1,by=0.1),expand=c(0,0)) +
   scale_x_continuous(breaks=seq(0,11,by=1))+
   labs(tag="A")
-p_cumu_by_age
+p_cumu_by_age_2007
 
 write_csv(inf_chain_cumu_summary, file=paste0("figures/cumulative_incidence_by_age_2007+_,",file_ver,".csv"))
 
@@ -664,7 +664,7 @@ inf_chain_summary <- inf_chain %>%
 
 p_incidence_by_age <- ggplot(inf_chain_summary) +
   geom_boxplot(aes(x=age,y=prop,group=age),fill="grey80") +
-  geom_text(data=.%>% group_by(age) %>% dplyr::summarize(N=median(N)),aes(x=age,y=0.45,label=paste0("N=",N))) +
+  geom_text(data=.%>% group_by(age) %>% dplyr::summarize(N=median(N)),aes(x=age,y=0.45,label=paste0("N=",N)),size=2) +
   theme_use +
   xlab("Age (years)") +
   ylab("Incidence per year\n (infections per capita)") +
@@ -674,7 +674,7 @@ p_incidence_by_age <- ggplot(inf_chain_summary) +
 p_incidence_by_age
 write_csv(inf_chain_summary %>% group_by(age) %>% summarize(med=median(prop),lower=quantile(prop,0.025),upper=quantile(prop,0.975),N=median(N)), file=paste0("figures/incidence_by_age_2007+_",file_ver,".csv"))
 
-ggsave(p_cumu_by_age/p_incidence_by_age,filename=paste0("figures/cumulative_and_incidence_by_age_2007+_",file_ver,".png"),width=4,height=4,units="in",dpi=300)
+ggsave(p_cumu_by_age_2007/p_incidence_by_age,filename=paste0("figures/cumulative_and_incidence_by_age_2007+_",file_ver,".png"),width=4,height=4,units="in",dpi=300)
 
 ## Plot spline of age at isolation
 antibody_data <- antibody_data %>% mutate(age_at_circulation = biomarker_id - birth)

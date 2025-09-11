@@ -11,10 +11,10 @@ setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/")
 
 ## Read in attack rates from ic50 Debbink scenario
 serosolver_ar <- read_csv("results_linear/ic50_kendra_attack_rates.csv")
-inf_chain_debbink_exp <- load_infection_chains(location="local_data_exponential/norovirus_true/chains/ic50_real/",burnin = 400000)$chain
-inf_chain_kendra_exp <- load_infection_chains(location="local_data_exponential/norovirus_true/chains/ic50_kendra/",burnin = 400000)$chain
-inf_chain_debbink_linear <- load_infection_chains(location="local_data_linear/norovirus_true/chains/ic50_real/",burnin = 400000)$chain
-inf_chain_kendra_linear <- load_infection_chains(location="local_data_linear/norovirus_true/chains/ic50_kendra/",burnin = 400000)$chain
+inf_chain_debbink_exp <- load_infection_chains(location="local_data_exponential/norovirus_true/chains/ic50_real/",burnin = 300000)$chain
+inf_chain_kendra_exp <- load_infection_chains(location="local_data_exponential/norovirus_true/chains/ic50_kendra/",burnin = 300000)$chain
+inf_chain_debbink_linear <- load_infection_chains(location="local_data_linear/norovirus_true/chains/ic50_real/",burnin = 300000)$chain
+inf_chain_kendra_linear <- load_infection_chains(location="local_data_linear/norovirus_true/chains/ic50_kendra/",burnin = 300000)$chain
 
 inf_chains <- list(inf_debbink_exp=inf_chain_debbink_exp,
                    inf_kendra_exp=inf_chain_kendra_exp,

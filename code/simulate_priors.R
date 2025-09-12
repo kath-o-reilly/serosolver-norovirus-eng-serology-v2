@@ -43,8 +43,8 @@ simulate_priors <- function(N=1000){
 
 
 simulate_priors_original_model <- function(N=1000){
-  p1a <- rlnorm(N,log(3), 0.75) ## Boost long
-  p2a <- rlnorm(N,log(3), 0.75) ## Boost short
+  p1a <- rlnorm(N,log(4), 0.75) ## Boost long
+  p2a <- rlnorm(N,log(2), 0.75) ## Boost short
   p3a <- rbeta(N,1, 1) ## Wane short
   p4a <- rbeta(N,1, 1) ## AS
   #p5a <- rlnorm(N,log(0.01), 1.25) ## CR long

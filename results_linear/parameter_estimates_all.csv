@@ -1,39 +1,39 @@
 Parameter,Data,Map,Avidity,IC50
-Antigenic seniority parameter,avid_debbink,Debbink,"0.562 (0.313, 0.662)",NA
-Observation error (standard deviation),avid_debbink,Debbink,"0.827 (0.798, 0.858)",NA
-Transient boost,avid_debbink,Debbink,"2.08 (1.93, 2.28)",NA
-Transient cross-reactivity gradient,avid_debbink,Debbink,"0.029 (0.00373, 0.0461)",NA
-Transient waning rate,avid_debbink,Debbink,"0.0325 (0.000322, 0.192)",NA
-Antigenic seniority parameter,avid_kendra,Kendra,"0.485 (0.14, 0.649)",NA
-Observation error (standard deviation),avid_kendra,Kendra,"0.814 (0.783, 0.851)",NA
-Transient boost,avid_kendra,Kendra,"2.2 (2.04, 2.33)",NA
-Transient cross-reactivity gradient,avid_kendra,Kendra,"0.0375 (0.000106, 0.0558)",NA
-Transient waning rate,avid_kendra,Kendra,"0.0732 (0.000124, 0.343)",NA
-Antigenic seniority parameter,both_kendra,Kendra,"0.697 (0.474, 0.835)","0.241 (0.144, 0.469)"
-Long-term boost,both_kendra,Kendra,NA,"3.08 (2.17, 3.68)"
-Long-term cross-reactivity gradient,both_kendra,Kendra,NA,"0.0898 (0.0424, 0.114)"
-Observation error (standard deviation),both_kendra,Kendra,"0.885 (0.845, 0.94)","1.1 (1.05, 1.19)"
-Transient boost,both_kendra,Kendra,"1.86 (1.68, 2.03)","3.18 (2.44, 4.48)"
-Transient cross-reactivity gradient,both_kendra,Kendra,"0.0161 (0.000997, 0.0345)","0.0464 (0.0013, 0.113)"
-Transient waning rate,both_kendra,Kendra,"0.00965 (0.000309, 0.0665)","0.491 (0.375, 0.604)"
-Antigenic seniority parameter,both_real,Debbink,"0.705 (0.471, 0.801)","0.255 (0.161, 0.476)"
-Long-term boost,both_real,Debbink,NA,"2.4 (1.75, 2.89)"
-Long-term cross-reactivity gradient,both_real,Debbink,NA,"0.0757 (0.0526, 0.0926)"
-Observation error (standard deviation),both_real,Debbink,"0.883 (0.849, 0.923)","1.15 (1.1, 1.22)"
-Transient boost,both_real,Debbink,"1.91 (1.82, 2.04)","3.37 (2.63, 4.47)"
-Transient cross-reactivity gradient,both_real,Debbink,"0.0256 (0.0164, 0.0353)","0.0112 (0.000243, 0.0395)"
-Transient waning rate,both_real,Debbink,"0.00705 (7.71e-05, 0.0685)","0.37 (0.23, 0.548)"
-Antigenic seniority parameter,ic50_kendra,Kendra,NA,"0.207 (0.165, 0.249)"
-Long-term boost,ic50_kendra,Kendra,NA,"3.37 (1.74, 3.95)"
-Long-term cross-reactivity gradient,ic50_kendra,Kendra,NA,"0.143 (0.107, 0.273)"
-Observation error (standard deviation),ic50_kendra,Kendra,NA,"1.09 (1.04, 1.16)"
-Transient boost,ic50_kendra,Kendra,NA,"2.71 (2.14, 4.04)"
-Transient cross-reactivity gradient,ic50_kendra,Kendra,NA,"0.00703 (0.000271, 0.0265)"
-Transient waning rate,ic50_kendra,Kendra,NA,"0.464 (0.107, 0.639)"
-Antigenic seniority parameter,ic50_real,Debbink,NA,"0.225 (0.171, 0.283)"
-Long-term boost,ic50_real,Debbink,NA,"3.17 (2.98, 3.37)"
-Long-term cross-reactivity gradient,ic50_real,Debbink,NA,"0.0672 (0.0582, 0.0751)"
-Observation error (standard deviation),ic50_real,Debbink,NA,"1.13 (1.09, 1.18)"
-Transient boost,ic50_real,Debbink,NA,"2.49 (2.2, 2.83)"
-Transient cross-reactivity gradient,ic50_real,Debbink,NA,"0.0105 (0.000238, 0.038)"
-Transient waning rate,ic50_real,Debbink,NA,"0.485 (0.334, 0.595)"
+Antigenic seniority parameter,avid_debbink,Debbink,"0.595 (0.515, 0.683)",NA
+Observation error (standard deviation),avid_debbink,Debbink,"0.828 (0.796, 0.862)",NA
+Transient boost,avid_debbink,Debbink,"2.04 (1.93, 2.16)",NA
+Transient cross-reactivity gradient,avid_debbink,Debbink,"0.0353 (0.0235, 0.046)",NA
+Transient waning rate,avid_debbink,Debbink,"0.00529 (0.000175, 0.0184)",NA
+Antigenic seniority parameter,avid_kendra,Kendra,"0.56 (0.47, 0.647)",NA
+Observation error (standard deviation),avid_kendra,Kendra,"0.804 (0.769, 0.839)",NA
+Transient boost,avid_kendra,Kendra,"2.24 (2.1, 2.37)",NA
+Transient cross-reactivity gradient,avid_kendra,Kendra,"0.0507 (0.0405, 0.0599)",NA
+Transient waning rate,avid_kendra,Kendra,"0.00355 (0.000115, 0.0129)",NA
+Antigenic seniority parameter,both_kendra,Kendra,"0.746 (0.654, 0.834)","0.187 (0.14, 0.232)"
+Long-term boost,both_kendra,Kendra,NA,"3.4 (3.11, 3.66)"
+Long-term cross-reactivity gradient,both_kendra,Kendra,NA,"0.0975 (0.0785, 0.11)"
+Observation error (standard deviation),both_kendra,Kendra,"0.894 (0.861, 0.929)","1.08 (1.04, 1.13)"
+Transient boost,both_kendra,Kendra,"1.86 (1.74, 2.01)","2.56 (2.22, 3.01)"
+Transient cross-reactivity gradient,both_kendra,Kendra,"0.0135 (0.00113, 0.03)","0.0337 (0.00126, 0.0894)"
+Transient waning rate,both_kendra,Kendra,"0.00357 (8.21e-05, 0.0119)","0.555 (0.486, 0.65)"
+Antigenic seniority parameter,both_real,Debbink,"0.801 (0.729, 0.87)","0.209 (0.154, 0.269)"
+Long-term boost,both_real,Debbink,NA,"2.99 (2.78, 3.19)"
+Long-term cross-reactivity gradient,both_real,Debbink,NA,"0.0674 (0.0558, 0.0761)"
+Observation error (standard deviation),both_real,Debbink,"0.9 (0.868, 0.933)","1.13 (1.08, 1.18)"
+Transient boost,both_real,Debbink,"1.98 (1.89, 2.08)","2.63 (2.28, 3.04)"
+Transient cross-reactivity gradient,both_real,Debbink,"0.0262 (0.0155, 0.0363)","0.0111 (0.000293, 0.0454)"
+Transient waning rate,both_real,Debbink,"0.00278 (8.29e-05, 0.00951)","0.504 (0.4, 0.597)"
+Antigenic seniority parameter,ic50_kendra,Kendra,NA,"0.203 (0.164, 0.241)"
+Long-term boost,ic50_kendra,Kendra,NA,"3.74 (3.5, 3.95)"
+Long-term cross-reactivity gradient,ic50_kendra,Kendra,NA,"0.114 (0.106, 0.12)"
+Observation error (standard deviation),ic50_kendra,Kendra,NA,"1.08 (1.03, 1.12)"
+Transient boost,ic50_kendra,Kendra,NA,"2.41 (2.13, 2.71)"
+Transient cross-reactivity gradient,ic50_kendra,Kendra,NA,"0.00751 (0.000211, 0.0243)"
+Transient waning rate,ic50_kendra,Kendra,NA,"0.55 (0.487, 0.645)"
+Antigenic seniority parameter,ic50_real,Debbink,NA,"0.223 (0.169, 0.287)"
+Long-term boost,ic50_real,Debbink,NA,"3.17 (2.95, 3.36)"
+Long-term cross-reactivity gradient,ic50_real,Debbink,NA,"0.0669 (0.0551, 0.0747)"
+Observation error (standard deviation),ic50_real,Debbink,NA,"1.13 (1.09, 1.19)"
+Transient boost,ic50_real,Debbink,NA,"2.49 (2.2, 2.82)"
+Transient cross-reactivity gradient,ic50_real,Debbink,NA,"0.0112 (0.000248, 0.0412)"
+Transient waning rate,ic50_real,Debbink,NA,"0.486 (0.343, 0.6)"

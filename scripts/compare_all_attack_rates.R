@@ -8,6 +8,7 @@ library(data.table)
 library(patchwork)
 
 setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/")
+source("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/code/adjust_age_distribution.R", echo=TRUE)
 
 ## Read in attack rates from ic50 Debbink scenario
 serosolver_ar <- read_csv("results_linear/ic50_kendra_attack_rates.csv")

@@ -1055,7 +1055,7 @@ inf_chain <- expand_grid(i=unique(antibody_data$individual),j=unique(inf_chain$j
   mutate(x=if_else(is.na(x),0,x)) %>%
   as.data.table()
 
-inf_chain$j <- antigenic_map$inf_times[inf_chain$j]
+inf_chain$j <- serosolver_settings$antigenic_map$inf_times[inf_chain$j]
 data.table::setkey(inf_chain, "i", "j","samp_no","chain_no")
 n_inf_chain_i <- inf_chain[, list(V1 = sum(x)), by = key(inf_chain)]
 colnames(n_inf_chain_i)[1] <- "individual"
@@ -1136,3 +1136,4 @@ titre_dat$infs_per_life <- (titre_dat$median_infs)/(titre_dat$age) # specific ag
 write_csv(infections_by_age_2006,file=paste0(save_wd_results,"_infection_histories_age2006.csv"))
 write_csv(infections_by_age,file=paste0(save_wd_results,"_infection_histories_age.csv"))
 write_csv(infections_by_age_and_year,file=paste0(save_wd_results,"_infection_histories_age_and_year.csv"))
+

@@ -71,6 +71,7 @@ p_rhs <- ggplot(traj) +
 p_lhs | p_rhs
 
 ggsave("figures/prior_exponential_traj.png",p_lhs | p_rhs,height=5,width=7)
+ggsave("figures/prior_exponential_traj.pdf",p_lhs | p_rhs,height=5,width=7)
 
 ## Just IC50
 p_lhs_ic50 <- ggplot(traj %>% filter(Assay == "IC50")) +
@@ -99,6 +100,9 @@ p_rhs_ic50 <- ggplot(traj%>% filter(Assay == "IC50")) +
   ggtitle("Prior draws")
 
 ggsave("figures/prior_exponential_traj_ic50.png",p_lhs_ic50 | p_rhs_ic50,height=3,width=7)
+ggsave("figures/prior_exponential_traj_ic50.pdf",p_lhs_ic50 | p_rhs_ic50,height=3,width=7)
+
+pA <- p_lhs_ic50 | p_rhs_ic50
 
 ## Linear model
 N <- 1000
@@ -164,6 +168,7 @@ p_lhs | p_rhs
 
 
 ggsave("figures/prior_linear_traj.png",p_lhs | p_rhs,height=5,width=7)
+ggsave("figures/prior_linear_traj.pdf",p_lhs | p_rhs,height=5,width=7)
 
 ## Just IC50
 p_lhs_ic50 <- ggplot(traj %>% filter(Assay == "IC50")) +
@@ -192,3 +197,11 @@ p_rhs_ic50 <- ggplot(traj%>% filter(Assay == "IC50")) +
   ggtitle("Prior draws")
 
 ggsave("figures/prior_linear_traj_ic50.png",p_lhs_ic50 | p_rhs_ic50,height=3,width=7)
+ggsave("figures/prior_linear_traj_ic50.pdf",p_lhs_ic50 | p_rhs_ic50,height=3,width=7)
+
+pB <- p_lhs_ic50 | p_rhs_ic50
+
+ggsave("figures/prior_comb_traj_ic50.pdf",pA/pB,height=6,width=7)
+ggsave("figures/prior_comb_traj_ic50.png",pA/pB,height=6,width=7)
+
+

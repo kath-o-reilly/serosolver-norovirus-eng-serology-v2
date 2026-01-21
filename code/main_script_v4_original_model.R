@@ -46,17 +46,17 @@ if(!dir.exists(chain_wd)) dir.create(chain_wd,recursive = TRUE)
 
 ## Simulation parameters
 ## Simulation parameters
-mcmc_pars <- c("save_block"=1000,
-               "thin"=500,
-               "thin_inf_hist"=3500,
-               "iterations"=700000,
-               "adaptive_iterations"=300000)
+#mcmc_pars <- c("save_block"=1000,
+#               "thin"=500,
+#               "thin_inf_hist"=3500,
+#               "iterations"=700000,
+#               "adaptive_iterations"=300000)
 
-#mcmc_pars <- c("save_block"=100,
-#               "thin"=5,
-#               "thin_inf_hist"=25,
-#               "iterations"=5000,
-#               "adaptive_iterations"=2000)
+mcmc_pars <- c("save_block"=1000,
+               "thin"=50,
+               "thin_inf_hist"=250,
+               "iterations"=50000,
+               "adaptive_iterations"=20000)
 
 cart_data <- read_in$cart[run_number]  #"Debbink" #"Kendra" #
 # analysis level
@@ -167,6 +167,11 @@ if(analysis == "avidity"){
 # tmp$biomarker_group <- 2
 # antibody_data <- rbind(antibody_data,tmp)
 # table(antibody_data$biomarker_group)
+
+## Remove individuals with all negative titers
+#antibody_data %>% group_by(individual,biomarker_group) %>% summarize(max_meas=max(measurement)) %>% filter(max_meas > 0) %>% pull(individual) -> x
+#antibody_data <- antibody_data %>% filter(individual %in% x)
+#antibody_data <- antibody_data %>% left_join(antibody_data %>% select(individual) %>% distinct() %>% mutate(individual_new = 1:n())) %>% select(-individual) %>% rename(individual=individual_new)
 
 n_obs_types <- length(unique(antibody_data$biomarker_group))
 
@@ -663,7 +668,7 @@ titer_infection_relationship_modified <- mod %>%
   mutate(prop_infected=prop_infected/prop_infected[1])
 
 titer_infection_relationship_modified_summary <- titer_infection_relationship_modified %>%
-  group_by(value) %>% summarize(mean=mean(prop_infected),lower=quantile(prop_infected,0.025),upper=quantile(prop_infected,0.975)) %>%
+  group_by(value) %>% summarize(mean=mean(prop_infected,na.rm=TRUE),lower=quantile(prop_infected,0.025,na.rm=TRUE),upper=quantile(prop_infected,0.975,na.rm=TRUE)) %>%
   mutate("Version"="Consecutive infections removed")
 
 titer_infection_relationship_summary <- bind_rows(titer_infection_relationship_unmodified_summary,titer_infection_relationship_modified_summary)

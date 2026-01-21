@@ -275,6 +275,7 @@ p_age_dist_compare <- ggplot(age_distribution %>% group_by(time) %>% mutate(weig
   theme(legend.position="bottom") +
   facet_wrap(~time)
 ggsave(p_age_dist_compare,filename=paste0("figures/checks/age_distribution_comparison_",file_ver,".png"),width=8,height=6,units="in",dpi=300)
+ggsave(p_age_dist_compare,filename=paste0("figures/checks/age_distribution_comparison_",file_ver,".pdf"),width=8,height=6,units="in",dpi=300)
 
 
 ## Read in the main serosolver infection history chains
@@ -427,6 +428,7 @@ p_ars_age_compare <- ggplot(ars_summary_age_comb) +
   facet_wrap(~paste0(age_group_simple, " years"),ncol=2)
 
 ggsave(p_ars_age_compare,filename=paste0("figures/attack_rate_comparison_by_age_weighted_vs_unweighted_",file_ver,".png"),width=7,height=8,units="in",dpi=300)
+ggsave(p_ars_age_compare,filename=paste0("figures/attack_rate_comparison_by_age_weighted_vs_unweighted_",file_ver,".pdf"),width=7,height=8,units="in",dpi=300)
 
 p_ars_age_weighted <- ggplot(ars_weighted_summary_age) + 
   geom_rect(xmin=min(antibody_data$sample_time),xmax=max(antibody_data$sample_time),ymin=-Inf,ymax=0.9,fill="aliceblue",alpha=0.1) +
@@ -637,13 +639,13 @@ ggsave(p_cumu_by_age/p_incidence_by_age,filename=paste0("figures/cumulative_and_
 
 
 ## Just after 2007
-inf_chain_cumu_summary <- inf_chain_cumu %>% 
+inf_chain_cumu_summary_2007 <- inf_chain_cumu %>% 
   filter(time > 2007) %>%
   group_by(samp_no, chain_no, age) %>% 
   summarize(prop = sum(cumu_infection)/n(),N=n()) %>%
   group_by(age) %>% summarize(med=median(prop),lower=quantile(prop,0.025),upper=quantile(prop,0.975),N=median(N))
 
-p_cumu_by_age_2007 <- ggplot(inf_chain_cumu_summary) +
+p_cumu_by_age_2007 <- ggplot(inf_chain_cumu_summary_2007) +
   geom_ribbon(aes(x=age,ymin=lower,ymax=upper),fill="grey80") +
   geom_line(aes(x=age,y=med),col="grey40") +
   theme_use +
@@ -654,15 +656,15 @@ p_cumu_by_age_2007 <- ggplot(inf_chain_cumu_summary) +
   labs(tag="A")
 p_cumu_by_age_2007
 
-write_csv(inf_chain_cumu_summary, file=paste0("figures/cumulative_incidence_by_age_2007+_,",file_ver,".csv"))
+write_csv(inf_chain_cumu_summary_2007, file=paste0("figures/cumulative_incidence_by_age_2007+_,",file_ver,".csv"))
 
 ## Raw incidence by age
-inf_chain_summary <- inf_chain %>% 
+inf_chain_summary_2007 <- inf_chain %>% 
   filter(time > 2007) %>%
   group_by(samp_no, chain_no, age) %>% 
   summarize(prop = sum(infected)/n(),N=n())
 
-p_incidence_by_age <- ggplot(inf_chain_summary) +
+p_incidence_by_age_2007 <- ggplot(inf_chain_summary_2007) +
   geom_boxplot(aes(x=age,y=prop,group=age),fill="grey80") +
   geom_text(data=.%>% group_by(age) %>% dplyr::summarize(N=median(N)),aes(x=age,y=0.45,label=paste0("N=",N)),size=2) +
   theme_use +
@@ -671,10 +673,10 @@ p_incidence_by_age <- ggplot(inf_chain_summary) +
   scale_x_continuous(breaks=seq(0,11,by=1))+
   scale_y_continuous(limits=c(0,0.45),breaks=seq(0,0.45,by=0.1)) +
   labs(tag="B")
-p_incidence_by_age
-write_csv(inf_chain_summary %>% group_by(age) %>% summarize(med=median(prop),lower=quantile(prop,0.025),upper=quantile(prop,0.975),N=median(N)), file=paste0("figures/incidence_by_age_2007+_",file_ver,".csv"))
+p_incidence_by_age_2007
+write_csv(inf_chain_summary_2007 %>% group_by(age) %>% summarize(med=median(prop),lower=quantile(prop,0.025),upper=quantile(prop,0.975),N=median(N)), file=paste0("figures/incidence_by_age_2007+_",file_ver,".csv"))
 
-ggsave(p_cumu_by_age_2007/p_incidence_by_age,filename=paste0("figures/cumulative_and_incidence_by_age_2007+_",file_ver,".png"),width=4,height=4,units="in",dpi=300)
+ggsave(p_cumu_by_age_2007/p_incidence_by_age_2007,filename=paste0("figures/cumulative_and_incidence_by_age_2007+_",file_ver,".png"),width=4,height=4,units="in",dpi=300)
 
 ## Plot spline of age at isolation
 antibody_data <- antibody_data %>% mutate(age_at_circulation = biomarker_id - birth)
@@ -702,6 +704,7 @@ p_ic50_seniority_DH2006 <- ggplot(antibody_data %>% filter(biomarker_group == 1)
   xlab("Age (years) at first virus isolation")
 
 ggsave(p_ic50_seniority,filename=paste0("figures/ic50_seniority_effect_",file_ver,".png"),width=5,height=3,units="in",dpi=300)
+ggsave(p_ic50_seniority,filename=paste0("figures/ic50_seniority_effect_",file_ver,".pdf"),width=5,height=3,units="in",dpi=300)
 ggsave(p_ic50_seniority_DH2006,filename=paste0("figures/ic50_seniority_effect_dh2006",file_ver,".png"),width=5,height=3,units="in",dpi=300)
 
 
@@ -712,5 +715,7 @@ p_incidence_all <- (p_ars_weighted + labs(tag="A") + theme(legend.position=c(0.8
   (p_cumu_by_age + labs(tag="C")) + 
   (p_incidence_by_age + labs(tag="B")) + 
   (p_cumu_incidence_by_age + labs(tag="D")) + plot_layout(ncol=2)
-ggsave(p_incidence_all,filename=paste0("figures/incidence_all_",file_ver,".png"),width=8,height=6,units="in",dpi=300)                                                               
+ggsave(p_incidence_all,filename=paste0("figures/incidence_all_",file_ver,".png"),width=8,height=6,units="in",dpi=300)
+ggsave(p_incidence_all,filename=paste0("figures/incidence_all_",file_ver,".pdf"),width=8,height=6,units="in",dpi=300)                                                               
+
   

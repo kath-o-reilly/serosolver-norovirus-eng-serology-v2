@@ -466,6 +466,7 @@ p_traces <- ggplot(tidy_theta_chain) +
 
 
 ggsave(paste0(save_wd,"/theta_traces.pdf"),p_traces,height=7*n_obs_types,width=7,units="in",dpi=300)
+ggsave(paste0(save_wd,"/theta_traces.png"),p_traces,height=7*n_obs_types,width=7,units="in",dpi=300)
 }
 priors <- simulate_priors(1000000)
 priors$name_key <- par_name_key[priors$name]
@@ -907,7 +908,12 @@ p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_d
   save(p_kinetics_alt, file=paste0("figures/estimated_kinetics_",run_name,"_all.rda"))
   ggsave(paste0("figures/estimated_kinetics_",run_name,"_all.pdf"),p_kinetics_alt,height=5,width=6,units="in",dpi=300)
   
-  
+  #antigenic_map <- read_csv(paste0(data_folder,"/","antigenic_map_hand.csv"))
+  #antigenic_map <- setup_antigenic_map(antigenic_map,n_biomarker_groups=n_obs_types,unique_biomarker_groups=1:n_obs_types)[[1]]
+  #antigenic_map1 <- antigenic_map %>% filter(inf_times >= 2001)
+  #serosolver_settings1 <- serosolver_settings
+  #serosolver_settings1$antigenic_map <- antigenic_map
+  #serosolver_settings1$possible_exposure_times <- unique(antigenic_map$inf_times)
   p_estimated_model2 <- plot_estimated_antibody_model(chains$theta_chain,
                                                       antibody_data=expand_grid(individual=1,sample_time=seq(2001,2012,by=1),
                                                                                 biomarker_id=unique(antigenic_map$inf_times),
@@ -940,6 +946,7 @@ p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_d
     theme(legend.position="bottom")
   
   ggsave(paste0(save_wd,"/estimated_antibody_landscape_model.pdf"),p_estimated_model_landscape,height=7,width=8,units="in",dpi=300)
+  ggsave(paste0(save_wd,"/estimated_antibody_landscape_model.png"),p_estimated_model_landscape,height=7,width=8,units="in",dpi=300)
   
   ## For schematic
   p_estimated_model3 <- plot_estimated_antibody_model(chains$theta_chain,# %>% mutate(boost_long = 2, boost_short = 3, wane_short=0.4,cr_long=1,cr_short=0.05),

@@ -27,7 +27,7 @@ The available data from Debbink and Kendra were run through the online platform 
 
 For a more detailed description of serosolver, including installation and checking, see [github.com/seroanalytics/serosolver](https://github.com/seroanalytics/serosolver). Before running this code it is strongly recommended that the vignette describing [cross-sectional data](https://seroanalytics.org/serosolver/articles/cs2_vignette.html) is read and run so the general principals are understood.
 
-The model results in the paper focus on using the _exponential_ model, ie. we assume that the short-term response wanes exponentially over time. An overview of the relationships between r code, data, inputs, and outputs are given below. The estimation process can be run by running the script in `1.main_exponential_model.r` and this runs both the estimation process and the generation of figures and tables. If instead re-running the post-mcmc analysis is needed, then make sure that `rerun_mcmc` is set to `FALSE`.
+The model results in the paper focus on using the _exponential_ model, ie. we assume that the short-term response wanes exponentially over time. An overview of the relationships between r code, data, inputs, and outputs are given below. The estimation process is run using the script in `1.main_exponential_model.r` and this runs both the estimation process and the generation of figures and tables. If instead re-running the post-mcmc analysis is needed, then make sure that `rerun_mcmc` is set to `FALSE`.
 
 ![Overview of the code, data, inputs and outputs for the serosolver estimation](additional/serosolver_code_overview.png)
 

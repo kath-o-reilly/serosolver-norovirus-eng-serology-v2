@@ -21,8 +21,7 @@ Plotting the serology by the "age of child at first virus isolation" is availabl
 
 Antigenic maps are created from mouse sera where they were immunised using a specific variant virus like particles (VLP) and their antigenic response to several variants tested. 
 
-The available data from Debbink and Kendra were run through the online platform [ACMacs](https://acmacs-web.antigenic-
-cartography.org/)
+The available data from Debbink and Kendra were run through the online platform [ACMacs](https://acmacs-web.antigenic-cartography.org/)
 
 ### Description of mathematical model (serosolver)
 

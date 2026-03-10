@@ -15,7 +15,7 @@ The analysis presented in the paper consists of the following sub-sections, the 
 
 The norovirus variant serology were first reported in Lindesmith et al [(2023)](https://pubmed.ncbi.nlm.nih.gov/36854303/), and are provided as public data [here](https://zenodo.org/records/7547170).
 
-Plotting the serology by the "age of child at first virus isolation" is available in the script ``additional/plot_age_virus_isolation.r``
+Plotting the serology by the "age of child at first virus isolation" is available in the script ``additional/plot_age_virus_isolation.r`` **Needs to be added**
 
 ### Norovirus variant dynamics and antibody cross-reactivity
 
@@ -24,6 +24,16 @@ Antigenic maps are created from mouse sera where they were immunised using a spe
 The available data from Debbink and Kendra were run through the online platform [ACMacs](https://acmacs-web.antigenic-cartography.org/)
 
 ### Description of mathematical model (serosolver)
+
+For a more detailed description of serosolver, including installation and checking, see [github.com/seroanalytics/serosolver](https://github.com/seroanalytics/serosolver). Before running this code it is strongly recommended that the vignette describing [cross-sectional data](https://seroanalytics.org/serosolver/articles/cs2_vignette.html) is read and run so the general principals are understood.
+
+The model results in the paper focus on using the _exponential_ model, ie. we assume that the short-term response wanes exponentially over time. An overview of the relationships between r code, data, inputs, and outputs are given below. The estimation process can be run by running the script in `1.main_exponential_model.r` and this runs both the estimation process and the generation of figures and tables. If instead re-running the post-mcmc analysis is needed, then make sure that `rerun_mcmc` is set to `FALSE`.
+
+![Overview of the code, data, inputs and outputs for the serosolver estimation](additional/serosolver_code_overview.png)
+
+The same process can be followed for the linear model `2.main_linear_model.r`. Additional scripts are available for estimating infection trend results (`3.generate_infection_trend_results`) and comparing attack rates across models and assumptions from the antigenic cartography (`4.compare_all_attack_rates.r`). 
+
+
 
 
 

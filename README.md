@@ -1,6 +1,6 @@
 # Overview
 
-This repo provide the code and data for the paper [Estimation of Annual Exposures and Antibody Kinetics Against Norovirus GII.4
+This repo provides the code and data for the paper [Estimation of Annual Exposures and Antibody Kinetics Against Norovirus GII.4
 Variants from English Serology Data, 2007-2012](https://www.medrxiv.org/). As of the 10-Mar-2026, this manuscript is under review and should appear as a pre-print in medrxiv very soon.
 
 The abstract of the manuscript is below:
@@ -9,19 +9,19 @@ Norovirus in humans is highly contagious, causing diarrhoea and vomiting, and is
 
 ## Instructions for re-using the code
 
-The analysis presented n the paper consists of the following sub-sections, the relevant code description and instruction is taken in turn.
+The analysis presented in the paper consists of the following sub-sections, the relevant code description and instruction is taken in turn.
 
 ### Description of data   
 
-The norovirus variant serology were first reported in Lindesmith et al [2023](https://pubmed.ncbi.nlm.nih.gov/36854303/), and are provided as public data [here](https://zenodo.org/records/7547170).
+The norovirus variant serology were first reported in Lindesmith et al [(2023)](https://pubmed.ncbi.nlm.nih.gov/36854303/), and are provided as public data [here](https://zenodo.org/records/7547170).
 
-Plotting the serology by the "age of child at first virus isolation" is available in the script ``additional/adplot_age_virus_isolation.r``
+Plotting the serology by the "age of child at first virus isolation" is available in the script ``additional/plot_age_virus_isolation.r``
 
 ### Norovirus variant dynamics and antibody cross-reactivity
 
-Antigenic maps are created from mouse sera where they were immunised using a specific variant virus like particle (VLP) and their antigenic response to several variants tested. 
+Antigenic maps are created from mouse sera where they were immunised using a specific variant virus like particles (VLP) and their antigenic response to several variants tested. 
 
-The available data from Debbink and Kendra were run through an online platform [ACMacs](https://acmacs-web.antigenic-
+The available data from Debbink and Kendra were run through the online platform [ACMacs](https://acmacs-web.antigenic-
 cartography.org/)
 
 ### Description of mathematical model (serosolver)

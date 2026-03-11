@@ -15,7 +15,7 @@ The analysis presented in the paper consists of the following sub-sections, the 
 
 The norovirus variant serology were first reported in Lindesmith et al [(2023)](https://pubmed.ncbi.nlm.nih.gov/36854303/), and are provided as public data [here](https://zenodo.org/records/7547170).
 
-Plotting the serology by the "age of child at first virus isolation" is available in the script ``additional/plot_age_virus_isolation.r`` **Needs to be added**
+Plotting the serology by the "age of child at first virus isolation" is available in the script `code/3.generate_infection_trend_results.r` with the handle `p_ic50_seniority`. Within this file there are many exploratory plots.
 
 ### Norovirus variant dynamics and antibody cross-reactivity
 

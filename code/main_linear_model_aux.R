@@ -39,15 +39,20 @@ source("code/simulate_priors.R")
 read_in <- read_csv("inputs/serosolver_norovirus_input.csv")
 
 ## run_number <- 3
-
+#obs_ver <- 3
+#fp_rate_set <- 0.001
+#fp_rate_fixed <- 1
 run_name <- read_in$output_name[run_number] #"sim_avid_real"
-main_wd <- paste0("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/local_data_linear/",read_in$sim_type[run_number]) #norovirus_true"
+main_wd <- paste0("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/local_data_linear_obs_ver_",obs_ver,"/",read_in$sim_type[run_number]) #norovirus_true"
 chain_wd <- paste0(main_wd,"/chains/",run_name)
 save_wd <- paste0(main_wd,"/figures/",run_name)
-save_wd_results <- paste0("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2","/results_linear/",run_name)
+save_wd_results <- paste0("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2","/results_linear_obs_ver_",obs_ver,"/",run_name)
 data_folder = "~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/Data/"
 
+
+if(!dir.exists(main_wd)) dir.create(main_wd,recursive = TRUE)
 if(!dir.exists(save_wd)) dir.create(save_wd,recursive = TRUE)
+if(!dir.exists(save_wd_results)) dir.create(save_wd_results,recursive = TRUE)
 if(!dir.exists(chain_wd)) dir.create(chain_wd,recursive = TRUE)
 
 ## Simulation parameters
@@ -182,9 +187,9 @@ if(analysis == "avidity"){
 n_obs_types <- length(unique(antibody_data$biomarker_group))
 
 ## Use observation model with possible false positives
-obs_type_dists <- 2 #c(1,1)
+obs_type_dists <- obs_ver #2 #c(1,1)
 if(analysis == "both"){
-  obs_type_dists <- c(2,2)
+  obs_type_dists <- c(obs_ver,obs_ver)# c(2,2)
 }
 
 #n_obs_types <- 2 ## Number of observation types (eg. antibody titer and binding avidity)
@@ -273,7 +278,8 @@ n_times <- length(possible_exposure_times)
 
 ## Set up parameter table
 par_tab <- read.csv("inputs/par_tab.csv",stringsAsFactors=FALSE)
-par_tab[par_tab$names == "fp_rate","values"] <- 0.001 ## Set false positive probabilty to 0.1%
+par_tab[par_tab$names == "fp_rate","values"] <- fp_rate_set ## Set false positive probabilty to 0.1%
+par_tab[par_tab$names == "fp_rate","fixed"] <- fp_rate_fixed ## 
 
 ################################ 
 ## IMPORTANT
@@ -889,8 +895,8 @@ if(analysis == "both"){
     scale_x_continuous(limits=c(2002,2012), breaks=seq(2002,2012,by=2),labels=seq(0,10,by=2)) +
     theme(legend.position=c(0.8,0.8),plot.tag=element_text(face="bold")) +
     labs(tag="A")
-  save(p_kinetics_alt, file=paste0("figures_linear/kinetics/estimated_kinetics_",run_name,".rda"))
-  ggsave(paste0("figures_linear/kinetics/estimated_kinetics_",run_name,".pdf"),p_kinetics_alt,height=3,width=5,units="in",dpi=300)
+  save(p_kinetics_alt, file=paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,".rda"))
+  ggsave(paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,".pdf"),p_kinetics_alt,height=3,width=5,units="in",dpi=300)
   
   ## Alternatives for infection from other strains
   tmp_dat <- NULL
@@ -922,8 +928,8 @@ if(analysis == "both"){
     theme(legend.position=c(0.8,0.8),plot.tag=element_text(face="bold")) +
     facet_wrap(~label) +
     theme(legend.position="bottom",plot.tag=element_text(face="bold"))
-  save(p_kinetics_alt, file=paste0("figures_linear/kinetics/estimated_kinetics_",run_name,"_all.rda"))
-  ggsave(paste0("figures_linear/kinetics/estimated_kinetics_",run_name,"_all.pdf"),p_kinetics_alt,height=5,width=6,units="in",dpi=300)
+  save(p_kinetics_alt, file=paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,"_all.rda"))
+  ggsave(paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,"_all.pdf"),p_kinetics_alt,height=5,width=6,units="in",dpi=300)
   
   
   p_estimated_model2 <- plot_estimated_antibody_model(chains$theta_chain,
@@ -1005,12 +1011,12 @@ if(analysis == "both"){
           axis.text.x=element_text(angle=45,hjust=1,size=6))+
     labs(tag="B")
   
-  save(p_model_schematic, p_schematic_data, file=paste0("figures_linear/model_schematic/model_schematic_",run_name,".rda"))
+  save(p_model_schematic, p_schematic_data, file=paste0("figures_linear_obs_ver_",obs_ver,"/model_schematic/model_schematic_",run_name,".rda"))
   
   ggsave(p_model_schematic + p_schematic_data + plot_layout(ncol=2,widths=c(3,1)),
-         filename=paste0("figures_linear/model_schematic/model_schematic_",run_name,".pdf"),height=3,width=7,units="in",dpi=300)
+         filename=paste0("figures_linear_obs_ver_",obs_ver,"/model_schematic/model_schematic_",run_name,".pdf"),height=3,width=7,units="in",dpi=300)
   ggsave(p_model_schematic + p_schematic_data + plot_layout(ncol=2,widths=c(3,1)),
-         filename=paste0("figures_linear/model_schematic/model_schematic_",run_name,".png"),height=3,width=7,units="in",dpi=300)
+         filename=paste0("figures_linear_obs_ver_",obs_ver,"/model_schematic/model_schematic_",run_name,".png"),height=3,width=7,units="in",dpi=300)
 } 
 
 ################################ 

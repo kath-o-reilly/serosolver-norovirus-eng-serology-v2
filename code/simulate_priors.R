@@ -110,7 +110,10 @@ prior_func_exponential_ic50 <- function(par_tab){
     # p7a <- sum(dnorm(pars[which(par_names == "obs_sd"& par_biomarker_groups == 1)],0, 10,log=TRUE)) # No change
     p7a <- sum(dlnorm(pars[which(par_names == "obs_sd"& par_biomarker_groups == 1)],log(1),0.75,log=TRUE))
     
-    prior_p <- prior_p + p1a + p2a + p3a + p4a + p5a + p6a + p7a# + p_rhos
+    # Prior on fp_rate
+    p8 <- sum(dlnorm(pars[which(par_names == "fp_rate"& par_biomarker_groups == 1)],log(0.001), 1,log=TRUE))
+    
+    prior_p <- prior_p + p1a + p2a + p3a + p4a + p5a + p6a + p7a + p8# + p_rhos
     
     ## Priors for biomarker group 2
     if(2 %in% par_biomarker_groups){
@@ -130,8 +133,9 @@ prior_func_exponential_ic50 <- function(par_tab){
       p5b <- 0 #sum(log(EnvStats::dlnormTrunc(pars[which(par_names == "cr_long"& par_biomarker_groups == 2)],meanlog=log(0.5), sdlog=1,min=0,max=2) )) # Skewed toward high cross-reactivity
       p6b <- sum(log(EnvStats::dlnormTrunc(pars[which(par_names == "cr_short"& par_biomarker_groups == 2)],meanlog=log(0.5), sdlog=1,min=0,max=2) )) # Skewed toward high cross-reactivity
       p7b <- sum(dlnorm(pars[which(par_names == "obs_sd"& par_biomarker_groups == 2)],log(1),0.75,log=TRUE))
+      p8 <- sum(dlnorm(pars[which(par_names == "fp_rate"& par_biomarker_groups == 2)],log(0.001), 1,log=TRUE))
       
-      prior_p <- prior_p + p1b + p2b + p3b + p4b + p5b + p6b + p7b# + p_rhos
+      prior_p <- prior_p + p1b + p2b + p3b + p4b + p5b + p6b + p7b + p8# + p_rhos
       
     }
     
@@ -171,7 +175,10 @@ prior_func_linear_ic50 <- function(par_tab){
     # p7a <- sum(dnorm(pars[which(par_names == "obs_sd"& par_biomarker_groups == 1)],0, 10,log=TRUE)) # No change
     p7a <- sum(dlnorm(pars[which(par_names == "obs_sd"& par_biomarker_groups == 1)],log(1),0.75,log=TRUE))
     
-    prior_p <- prior_p + p1a + p2a + p3a + p4a + p5a + p6a + p7a# + p_rhos
+    # Prior on fp_rate
+    p8 <- sum(dlnorm(pars[which(par_names == "fp_rate"& par_biomarker_groups == 1)],log(0.001), 1,log=TRUE))
+    
+    prior_p <- prior_p + p1a + p2a + p3a + p4a + p5a + p6a + p7a + p8# + p_rhos
     
     ## Priors for biomarker group 2
     if(2 %in% par_biomarker_groups){
@@ -193,8 +200,9 @@ prior_func_linear_ic50 <- function(par_tab){
       
       #p7b <- sum(dnorm(pars[which(par_names == "obs_sd"& par_biomarker_groups == 1)],0, 10,log=TRUE)) # No change
       p7b <- sum(dlnorm(pars[which(par_names == "obs_sd"& par_biomarker_groups == 2)],log(1),0.75,log=TRUE))
+      p8 <- sum(dlnorm(pars[which(par_names == "fp_rate"& par_biomarker_groups == 2)],log(0.001), 1,log=TRUE))
       
-      prior_p <- prior_p + p1b + p2b + p3b + p4b + p5b + p6b + p7b# + p_rhos
+      prior_p <- prior_p + p1b + p2b + p3b + p4b + p5b + p6b + p7b + p8# + p_rhos
       
     }
     

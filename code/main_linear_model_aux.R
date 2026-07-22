@@ -57,17 +57,17 @@ if(!dir.exists(chain_wd)) dir.create(chain_wd,recursive = TRUE)
 
 ## Simulation parameters
 ## Simulation parameters
-#mcmc_pars <- c("save_block"=1000,
-#               "thin"=500,
-#               "thin_inf_hist"=3500,
-#               "iterations"=700000,
-#               "adaptive_iterations"=300000)
-
 mcmc_pars <- c("save_block"=1000,
-               "thin"=50,
-               "thin_inf_hist"=250,
-               "iterations"=50000,
-               "adaptive_iterations"=20000)
+               "thin"=500,
+               "thin_inf_hist"=3500,
+               "iterations"=700000,
+               "adaptive_iterations"=300000)
+
+#mcmc_pars <- c("save_block"=1000,
+#               "thin"=50,
+#               "thin_inf_hist"=250,
+#               "iterations"=50000,
+#               "adaptive_iterations"=20000)
 
 cart_data <- read_in$cart[run_number]  #"Debbink" #"Kendra" #
 # analysis level
@@ -485,7 +485,7 @@ if(rerun_mcmc){
   
   ggsave(paste0(save_wd,"/theta_traces.pdf"),p_traces,height=7*n_obs_types,width=7,units="in",dpi=300)
 }
-priors <- simulate_priors(1000000)
+priors <- simulate_priors_original_model(1000000)
 priors$name_key <- par_name_key[priors$name]
 if(analysis != "avidity"){
   priors <- priors %>%
@@ -895,8 +895,8 @@ if(analysis == "both"){
     scale_x_continuous(limits=c(2002,2012), breaks=seq(2002,2012,by=2),labels=seq(0,10,by=2)) +
     theme(legend.position=c(0.8,0.8),plot.tag=element_text(face="bold")) +
     labs(tag="A")
+  ggsave(paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,".pdf"),p_kinetics_alt,height=3,width=5,units="in",dpi=300,create.dir=TRUE)
   save(p_kinetics_alt, file=paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,".rda"))
-  ggsave(paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,".pdf"),p_kinetics_alt,height=3,width=5,units="in",dpi=300)
   
   ## Alternatives for infection from other strains
   tmp_dat <- NULL
@@ -928,8 +928,8 @@ if(analysis == "both"){
     theme(legend.position=c(0.8,0.8),plot.tag=element_text(face="bold")) +
     facet_wrap(~label) +
     theme(legend.position="bottom",plot.tag=element_text(face="bold"))
+  ggsave(paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,"_all.pdf"),p_kinetics_alt,height=5,width=6,units="in",dpi=300,create.dir=TRUE)
   save(p_kinetics_alt, file=paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,"_all.rda"))
-  ggsave(paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,"_all.pdf"),p_kinetics_alt,height=5,width=6,units="in",dpi=300)
   
   
   p_estimated_model2 <- plot_estimated_antibody_model(chains$theta_chain,
@@ -1011,12 +1011,12 @@ if(analysis == "both"){
           axis.text.x=element_text(angle=45,hjust=1,size=6))+
     labs(tag="B")
   
-  save(p_model_schematic, p_schematic_data, file=paste0("figures_linear_obs_ver_",obs_ver,"/model_schematic/model_schematic_",run_name,".rda"))
   
   ggsave(p_model_schematic + p_schematic_data + plot_layout(ncol=2,widths=c(3,1)),
-         filename=paste0("figures_linear_obs_ver_",obs_ver,"/model_schematic/model_schematic_",run_name,".pdf"),height=3,width=7,units="in",dpi=300)
+         filename=paste0("figures_linear_obs_ver_",obs_ver,"/model_schematic/model_schematic_",run_name,".pdf"),height=3,width=7,units="in",dpi=300,create.dir=TRUE)
   ggsave(p_model_schematic + p_schematic_data + plot_layout(ncol=2,widths=c(3,1)),
          filename=paste0("figures_linear_obs_ver_",obs_ver,"/model_schematic/model_schematic_",run_name,".png"),height=3,width=7,units="in",dpi=300)
+  save(p_model_schematic, p_schematic_data, file=paste0("figures_linear_obs_ver_",obs_ver,"/model_schematic/model_schematic_",run_name,".rda"))
 } 
 
 ################################ 
@@ -1027,6 +1027,7 @@ if(analysis == "both"){
 p_ar <- plot_attack_rates(chains$inf_chain,settings = serosolver_settings,
                           #true_ar=all_simulated_data$attack_rates, ## Set this to NULL for real data
                           by_group=FALSE, 
+                          group_subset=1,
                           plot_den = TRUE,
                           pad_chain=TRUE) +
   #geom_point(data=true_ar,aes(x=time,y=ar),col="red",shape=17,size=3) +

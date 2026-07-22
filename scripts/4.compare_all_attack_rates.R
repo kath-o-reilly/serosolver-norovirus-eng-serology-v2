@@ -1,3 +1,5 @@
+## Modified by AI assistant on 2026-07-22 using GPT-5. Updated model output
+## paths to use obs_ver_3 folder naming for spike-and-slab observation models.
 ## Compare attack rates scenarios
 
 ## Plot attack rates and compare to real data
@@ -11,11 +13,11 @@ setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/")
 source("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/code/adjust_age_distribution.R", echo=TRUE)
 
 ## Read in attack rates from ic50 Debbink scenario
-serosolver_ar <- read_csv("results_linear/ic50_kendra_attack_rates.csv")
-inf_chain_debbink_exp <- load_infection_chains(location="local_data_exponential/norovirus_true/chains/ic50_real/",burnin = 300000)$chain
-inf_chain_kendra_exp <- load_infection_chains(location="local_data_exponential/norovirus_true/chains/ic50_kendra/",burnin = 300000)$chain
-inf_chain_debbink_linear <- load_infection_chains(location="local_data_linear/norovirus_true/chains/ic50_real/",burnin = 300000)$chain
-inf_chain_kendra_linear <- load_infection_chains(location="local_data_linear/norovirus_true/chains/ic50_kendra/",burnin = 300000)$chain
+serosolver_ar <- read_csv("results_linear_obs_ver_3/ic50_kendra_attack_rates.csv")
+inf_chain_debbink_exp <- load_infection_chains(location="local_data_exponential_obs_ver_3/norovirus_true/chains/ic50_real/",burnin = 300000)$chain
+inf_chain_kendra_exp <- load_infection_chains(location="local_data_exponential_obs_ver_3/norovirus_true/chains/ic50_kendra/",burnin = 300000)$chain
+inf_chain_debbink_linear <- load_infection_chains(location="local_data_linear_obs_ver_3/norovirus_true/chains/ic50_real/",burnin = 300000)$chain
+inf_chain_kendra_linear <- load_infection_chains(location="local_data_linear_obs_ver_3/norovirus_true/chains/ic50_kendra/",burnin = 300000)$chain
 
 inf_chains <- list(inf_debbink_exp=inf_chain_debbink_exp,
                    inf_kendra_exp=inf_chain_kendra_exp,

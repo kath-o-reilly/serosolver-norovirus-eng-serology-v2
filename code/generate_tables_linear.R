@@ -1,7 +1,7 @@
 library(tidyverse)
 
 ## Combine and save parameter estimates
-theta_files <- list.files("results_linear_obs_ver",obs_ver,"/",pattern="theta_chain",full.names=TRUE)
+theta_files <- list.files(paste0("results_linear_obs_ver_",obs_ver,"/"),pattern="theta_chain",full.names=TRUE)
 theta_ests_all <- NULL
 for(file in theta_files){
   theta_ests <- read_csv(file)
@@ -16,11 +16,11 @@ for(file in theta_files){
   rename("Parameter"=name_key, "Data"=run_name, "Map"=map)
 theta_ests_all <- bind_rows(theta_ests_all, theta_ests_tmp)
 }
-write_csv(theta_ests_all, "results_linear_obs_ver_",obs_ver,"/parameter_estimates_all.csv")
+write_csv(theta_ests_all, paste0("results_linear_obs_ver_",obs_ver,"/parameter_estimates_all.csv"))
 
 
 ## Combine and save attach rate estimates
-ar_files <- list.files("results_linear_obs_ver_",obs_ver,"/",pattern="attack_rates.csv",full.names=TRUE)
+ar_files <- list.files(paste0("results_linear_obs_ver_",obs_ver,"/"),pattern="attack_rates.csv",full.names=TRUE)
 ar_ests_all <- NULL
 for(file in ar_files){
   ar_ests <- read_csv(file)
@@ -35,4 +35,4 @@ for(file in ar_files){
     rename("Data"=run_name, "Map"=map,"Year"=time,"Estimate"=est)
   ar_ests_all <- bind_rows(ar_ests_all, ar_ests_summary)
 }
-write_csv(ar_ests_all, "results_linear_obs_ver_",obs_ver,"/ar_estimates_all.csv")
+write_csv(ar_ests_all, paste0("results_linear_obs_ver_",obs_ver,"/ar_estimates_all.csv"))

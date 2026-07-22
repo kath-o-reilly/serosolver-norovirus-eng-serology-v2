@@ -7,3 +7,4 @@ local_data/norovirus_test/.DS_Store
 local_data/norovirus_test/figures/.DS_Store
 local_data/norovirus_true/.DS_Store
 local_data/norovirus_true/figures/.DS_Store
+local_data*

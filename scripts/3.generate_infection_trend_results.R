@@ -1,3 +1,5 @@
+## Modified by AI assistant on 2026-07-22 using GPT-5. Updated model output
+## paths to use obs_ver_3 folder naming for spike-and-slab observation models.
 ## Plot attack rates and compare to real data
 library(tidyverse)
 library(ggplot2)
@@ -10,8 +12,8 @@ setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/")
 source("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/code/adjust_age_distribution.R", echo=TRUE)
 
 ## Read in attack rates from ic50 Debbink scenario
-serosolver_ar <- read_csv("results_exponential/ic50_real_attack_rates.csv")
-inf_chains <- load_infection_chains(location="local_data_exponential/norovirus_true/chains/ic50_real/",burnin = 300000)
+serosolver_ar <- read_csv("results_exponential_obs_ver_3/ic50_real_attack_rates.csv")
+inf_chains <- load_infection_chains(location="local_data_exponential_obs_ver_3/norovirus_true/chains/ic50_real/",burnin = 300000)
 
 ## Read in our data
 antibody_data <- read_csv("Data/titre_dat_norovirus_age_avidity.csv")

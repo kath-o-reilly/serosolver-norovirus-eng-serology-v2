@@ -12,4 +12,8 @@ for(i in 1:1){
   rm(list=ls())
   gc()
 }
+
+obs_ver <- 3
+fp_rate_set <- 0.001
+fp_rate_fixed <- 1
 source("code/generate_tables_exponential.R")

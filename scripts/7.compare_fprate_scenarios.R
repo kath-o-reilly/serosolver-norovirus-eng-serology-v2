@@ -1,29 +1,34 @@
-# Created by AI assistant on 2026-07-22 using GPT-5. Compares available
-# ic50_real false-positive-rate sensitivity outputs using fprate_XX folders.
+# Created and modified by AI assistant on 2026-07-22 using GPT-5. Compares
+# available ic50_real false-positive-rate sensitivity outputs using fprate_XX
+# folders without sim_type as a directory layer.
 
 library(tidyverse)
 library(data.table)
 library(serosolver)
 library(ggplot2)
+source("code/scenario_paths.R")
 
 analysis_name <- "ic50_real"
-sim_type <- "norovirus_true"
-output_dir <- file.path("figures", "fprate_comparison")
+output_dir <- file.path("figures", "comparisons", "fprate_scenarios", analysis_name)
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
 model_registry <- tibble::tribble(
-  ~model_id, ~model_label, ~waning_model, ~observation_model, ~fp_rate, ~fp_rate_label, ~fallback_burnin, ~model_col,
-  "fprate_0.001", "False-positive rate = 0.001", "exponential", "spike-and-slab observation model", 0.001, "0.001", 300000, "#0072B2",
-  "fprate_0.01", "False-positive rate = 0.01", "exponential", "spike-and-slab observation model", 0.01, "0.01", 300000, "#D55E00",
-  "fprate_0.02", "False-positive rate = 0.02", "exponential", "spike-and-slab observation model", 0.02, "0.02", 300000, "#009E73"
+  ~model_id, ~model_label, ~waning_model, ~obs_ver, ~observation_model, ~fp_rate, ~fp_rate_label, ~fallback_burnin, ~model_col,
+  "fprate_0.001", "False-positive rate = 0.001", "exponential", 3, "spike-and-slab observation model", 0.001, "0.001", 300000, "#0072B2",
+  "fprate_0.01", "False-positive rate = 0.01", "exponential", 3, "spike-and-slab observation model", 0.01, "0.01", 300000, "#D55E00",
+  "fprate_0.02", "False-positive rate = 0.02", "exponential", 3, "spike-and-slab observation model", 0.02, "0.02", 300000, "#009E73"
 ) %>%
   mutate(
-    results_dir = paste0("results_exponential_fprate_", fp_rate_label),
-    local_dir = paste0("local_data_exponential_fprate_", fp_rate_label),
-    chain_dir = file.path(local_dir, sim_type, "chains", analysis_name),
-    figures_dir = file.path(local_dir, sim_type, "figures", analysis_name),
+    scenario_id = purrr::pmap_chr(
+      list(waning_model, obs_ver, fp_rate),
+      ~build_scenario_id("fprate_scenarios", ..1, ..2, ..3)
+    ),
+    results_dir = file.path("results", "fprate_scenarios", scenario_id),
+    local_dir = file.path("local_data", "fprate_scenarios", scenario_id),
+    chain_dir = file.path(local_dir, "chains", analysis_name),
+    figures_dir = file.path(local_dir, "figures", analysis_name),
     settings_file = file.path(chain_dir, paste0(analysis_name, "_serosolver_settings.RData")),
-    theta_file = file.path(results_dir, paste0(analysis_name, "_theta_chains.csv")),
+    theta_file = file.path(results_dir, analysis_name, paste0(analysis_name, "_theta_chains.csv")),
     out_res_file = file.path(figures_dir, "out_res.rda"),
     kinetics_file = NA_character_
   )

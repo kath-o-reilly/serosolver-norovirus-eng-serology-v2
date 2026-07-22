@@ -1,14 +1,15 @@
 # Created and modified by AI assistant on 2026-07-22 using GPT-5. Adds flexible
-# comparison plots for available ic50_real outputs using obs_ver_X folder names.
+# comparison plots for available ic50_real outputs using obs_ver_X folder names
+# without sim_type as a directory layer.
 
 library(tidyverse)
 library(data.table)
 library(serosolver)
 library(ggplot2)
+source("code/scenario_paths.R")
 
 analysis_name <- "ic50_real"
-sim_type <- "norovirus_true"
-output_dir <- file.path("figures", "model_comparison")
+output_dir <- file.path("figures", "comparisons", "model_versions", analysis_name)
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
 model_registry <- tibble::tribble(
@@ -19,15 +20,16 @@ model_registry <- tibble::tribble(
   "exponential_obs_ver_2", "Exponential / original observation model", "exponential", 2, "original observation model", 300000, "#CC79A7"
 ) %>%
   mutate(
-    results_dir = paste0("results_", waning_model, "_obs_ver_", obs_ver),
-    local_dir = paste0("local_data_", waning_model, "_obs_ver_", obs_ver),
-    chain_dir = file.path(local_dir, sim_type, "chains", analysis_name),
-    figures_dir = file.path(local_dir, sim_type, "figures", analysis_name),
+    scenario_id = purrr::map2_chr(waning_model, obs_ver, ~build_scenario_id("model_versions", .x, .y)),
+    results_dir = file.path("results", "model_versions", scenario_id),
+    local_dir = file.path("local_data", "model_versions", scenario_id),
+    chain_dir = file.path(local_dir, "chains", analysis_name),
+    figures_dir = file.path(local_dir, "figures", analysis_name),
     settings_file = file.path(chain_dir, paste0(analysis_name, "_serosolver_settings.RData")),
-    theta_file = file.path(results_dir, paste0(analysis_name, "_theta_chains.csv")),
+    theta_file = file.path(results_dir, analysis_name, paste0(analysis_name, "_theta_chains.csv")),
     out_res_file = file.path(figures_dir, "out_res.rda"),
-    kinetics_dir = if_else(waning_model == "linear", paste0("figures_linear_obs_ver_", obs_ver), paste0("figures_obs_ver_", obs_ver)),
-    kinetics_file = file.path(kinetics_dir, "kinetics", paste0("estimated_kinetics_", analysis_name, ".rda"))
+    kinetics_dir = file.path("figures", "model_versions", scenario_id, "kinetics", analysis_name),
+    kinetics_file = file.path(kinetics_dir, paste0("estimated_kinetics_", analysis_name, ".rda"))
   )
 
 has_infection_chains <- function(chain_dir) {

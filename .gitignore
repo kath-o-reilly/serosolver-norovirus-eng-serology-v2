@@ -1,3 +1,5 @@
+# Modified by AI assistant on 2026-07-22 using GPT-5. Added explicit ignore
+# coverage for archived raw local_data outputs.
 code/.DS_Store
 .DS_Store
 .Rhistory
@@ -8,3 +10,4 @@ local_data/norovirus_test/figures/.DS_Store
 local_data/norovirus_true/.DS_Store
 local_data/norovirus_true/figures/.DS_Store
 local_data*
+local_data_archive*

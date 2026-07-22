@@ -1,3 +1,6 @@
+## Modified by AI assistant on 2026-07-22 using GPT-5. Updated output paths
+## to use local_data/results/figures scenario-family folders without sim_type
+## as a directory layer.
 ######################################################
 ## Author: James Hay & Kath O'Reilly
 ## Date: 10 Jun 2025
@@ -35,6 +38,7 @@ summarize <- dplyr::summarize
 ## Set working directly locally and create a directory to store the MCMC chains in
 setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2")
 source("code/simulate_priors.R")
+source("code/scenario_paths.R")
 # load in csv for script options
 read_in <- read_csv("inputs/serosolver_norovirus_input.csv")
 
@@ -43,17 +47,26 @@ read_in <- read_csv("inputs/serosolver_norovirus_input.csv")
 #fp_rate_set <- 0.001
 #fp_rate_fixed <- 1
 run_name <- read_in$output_name[run_number] #"sim_avid_real"
-main_wd <- paste0("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/local_data_linear_obs_ver_",obs_ver,"/",read_in$sim_type[run_number]) #norovirus_true"
-chain_wd <- paste0(main_wd,"/chains/",run_name)
-save_wd <- paste0(main_wd,"/figures/",run_name)
-save_wd_results <- paste0("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2","/results_linear_obs_ver_",obs_ver,"/",run_name)
+sim_type <- read_in$sim_type[run_number]
+scenario_paths <- build_scenario_paths(
+  analysis_family = "model_versions",
+  waning_model = "linear",
+  obs_ver = obs_ver,
+  fp_rate_set = fp_rate_set,
+  run_name = run_name
+)
+main_wd <- scenario_paths$local_sim_dir
+chain_wd <- scenario_paths$chain_wd
+save_wd <- scenario_paths$save_wd
+save_wd_results <- scenario_paths$results_prefix
+kinetics_wd <- scenario_paths$kinetics_wd
+model_schematic_wd <- scenario_paths$model_schematic_wd
 data_folder = "~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/Data/"
 
 
-if(!dir.exists(main_wd)) dir.create(main_wd,recursive = TRUE)
-if(!dir.exists(save_wd)) dir.create(save_wd,recursive = TRUE)
-if(!dir.exists(save_wd_results)) dir.create(save_wd_results,recursive = TRUE)
-if(!dir.exists(chain_wd)) dir.create(chain_wd,recursive = TRUE)
+for(output_dir in c(main_wd, save_wd, dirname(save_wd_results), chain_wd, kinetics_wd, model_schematic_wd)) {
+  if(!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
+}
 
 ## Simulation parameters
 ## Simulation parameters
@@ -895,8 +908,8 @@ if(analysis == "both"){
     scale_x_continuous(limits=c(2002,2012), breaks=seq(2002,2012,by=2),labels=seq(0,10,by=2)) +
     theme(legend.position=c(0.8,0.8),plot.tag=element_text(face="bold")) +
     labs(tag="A")
-  ggsave(paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,".pdf"),p_kinetics_alt,height=3,width=5,units="in",dpi=300,create.dir=TRUE)
-  save(p_kinetics_alt, file=paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,".rda"))
+  ggsave(file.path(kinetics_wd, paste0("estimated_kinetics_", run_name, ".pdf")),p_kinetics_alt,height=3,width=5,units="in",dpi=300,create.dir=TRUE)
+  save(p_kinetics_alt, file=file.path(kinetics_wd, paste0("estimated_kinetics_", run_name, ".rda")))
   
   ## Alternatives for infection from other strains
   tmp_dat <- NULL
@@ -928,8 +941,8 @@ if(analysis == "both"){
     theme(legend.position=c(0.8,0.8),plot.tag=element_text(face="bold")) +
     facet_wrap(~label) +
     theme(legend.position="bottom",plot.tag=element_text(face="bold"))
-  ggsave(paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,"_all.pdf"),p_kinetics_alt,height=5,width=6,units="in",dpi=300,create.dir=TRUE)
-  save(p_kinetics_alt, file=paste0("figures_linear_obs_ver_",obs_ver,"/kinetics/estimated_kinetics_",run_name,"_all.rda"))
+  ggsave(file.path(kinetics_wd, paste0("estimated_kinetics_", run_name, "_all.pdf")),p_kinetics_alt,height=5,width=6,units="in",dpi=300,create.dir=TRUE)
+  save(p_kinetics_alt, file=file.path(kinetics_wd, paste0("estimated_kinetics_", run_name, "_all.rda")))
   
   
   p_estimated_model2 <- plot_estimated_antibody_model(chains$theta_chain,
@@ -1013,10 +1026,10 @@ if(analysis == "both"){
   
   
   ggsave(p_model_schematic + p_schematic_data + plot_layout(ncol=2,widths=c(3,1)),
-         filename=paste0("figures_linear_obs_ver_",obs_ver,"/model_schematic/model_schematic_",run_name,".pdf"),height=3,width=7,units="in",dpi=300,create.dir=TRUE)
+         filename=file.path(model_schematic_wd, paste0("model_schematic_", run_name, ".pdf")),height=3,width=7,units="in",dpi=300,create.dir=TRUE)
   ggsave(p_model_schematic + p_schematic_data + plot_layout(ncol=2,widths=c(3,1)),
-         filename=paste0("figures_linear_obs_ver_",obs_ver,"/model_schematic/model_schematic_",run_name,".png"),height=3,width=7,units="in",dpi=300)
-  save(p_model_schematic, p_schematic_data, file=paste0("figures_linear_obs_ver_",obs_ver,"/model_schematic/model_schematic_",run_name,".rda"))
+         filename=file.path(model_schematic_wd, paste0("model_schematic_", run_name, ".png")),height=3,width=7,units="in",dpi=300)
+  save(p_model_schematic, p_schematic_data, file=file.path(model_schematic_wd, paste0("model_schematic_", run_name, ".rda")))
 } 
 
 ################################ 
@@ -1143,4 +1156,3 @@ titre_dat$infs_per_life <- (titre_dat$median_infs)/(titre_dat$age) # specific ag
 write_csv(infections_by_age_2006,file=paste0(save_wd_results,"_infection_histories_age2006.csv"))
 write_csv(infections_by_age,file=paste0(save_wd_results,"_infection_histories_age.csv"))
 write_csv(infections_by_age_and_year,file=paste0(save_wd_results,"_infection_histories_age_and_year.csv"))
-

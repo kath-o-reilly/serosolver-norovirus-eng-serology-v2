@@ -1,5 +1,6 @@
 ## Modified by AI assistant on 2026-07-22 using GPT-5. Updated model output
-## paths to use obs_ver_3 folder naming for spike-and-slab observation models.
+## paths to use local_data/results/figures scenario-family folders without
+## sim_type as a directory layer.
 ## Compare attack rates scenarios
 
 ## Plot attack rates and compare to real data
@@ -11,13 +12,56 @@ library(patchwork)
 
 setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/")
 source("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/code/adjust_age_distribution.R", echo=TRUE)
+source("code/scenario_paths.R")
+
+exp_ic50_paths <- build_scenario_paths("model_versions", "exponential", 3, "ic50_real")
+exp_kendra_paths <- build_scenario_paths("model_versions", "exponential", 3, "ic50_kendra")
+linear_ic50_paths <- build_scenario_paths("model_versions", "linear", 3, "ic50_real")
+linear_kendra_paths <- build_scenario_paths("model_versions", "linear", 3, "ic50_kendra")
+incidence_wd <- exp_ic50_paths$incidence_wd
+if(!dir.exists(incidence_wd)) dir.create(incidence_wd, recursive = TRUE)
+fig_incidence_file <- function(...) file.path(incidence_wd, paste0(...))
+
+read_settings_data_type <- function(settings_file) {
+  if(!file.exists(settings_file)) {
+    return(NA_real_)
+  }
+
+  env <- new.env(parent = emptyenv())
+  load(settings_file, envir = env)
+  data_type <- unique(env$serosolver_settings$data_type)
+  if(length(data_type) != 1) {
+    stop("Expected one data_type in ", settings_file, ".")
+  }
+  data_type
+}
+
+comparison_settings <- tibble::tribble(
+  ~scenario, ~settings_file,
+  "Exponential / Debbink", file.path(exp_ic50_paths$chain_wd, "ic50_real_serosolver_settings.RData"),
+  "Exponential / Kendra", file.path(exp_kendra_paths$chain_wd, "ic50_kendra_serosolver_settings.RData"),
+  "Linear / Debbink", file.path(linear_ic50_paths$chain_wd, "ic50_real_serosolver_settings.RData"),
+  "Linear / Kendra", file.path(linear_kendra_paths$chain_wd, "ic50_kendra_serosolver_settings.RData")
+) %>%
+  mutate(data_type = purrr::map_dbl(settings_file, read_settings_data_type))
+
+invalid_settings <- comparison_settings %>%
+  filter(is.na(data_type) | data_type != 3)
+
+if(nrow(invalid_settings) > 0) {
+  stop(
+    "Attack-rate scenario comparisons must use obs_ver 3 for every input. Invalid inputs: ",
+    paste0(invalid_settings$scenario, " (data_type=", invalid_settings$data_type, ")",
+           collapse = "; ")
+  )
+}
 
 ## Read in attack rates from ic50 Debbink scenario
-serosolver_ar <- read_csv("results_linear_obs_ver_3/ic50_kendra_attack_rates.csv")
-inf_chain_debbink_exp <- load_infection_chains(location="local_data_exponential_obs_ver_3/norovirus_true/chains/ic50_real/",burnin = 300000)$chain
-inf_chain_kendra_exp <- load_infection_chains(location="local_data_exponential_obs_ver_3/norovirus_true/chains/ic50_kendra/",burnin = 300000)$chain
-inf_chain_debbink_linear <- load_infection_chains(location="local_data_linear_obs_ver_3/norovirus_true/chains/ic50_real/",burnin = 300000)$chain
-inf_chain_kendra_linear <- load_infection_chains(location="local_data_linear_obs_ver_3/norovirus_true/chains/ic50_kendra/",burnin = 300000)$chain
+serosolver_ar <- read_csv(file.path(linear_kendra_paths$results_run_dir, "ic50_kendra_attack_rates.csv"))
+inf_chain_debbink_exp <- load_infection_chains(location=exp_ic50_paths$chain_wd,burnin = 300000)$chain
+inf_chain_kendra_exp <- load_infection_chains(location=exp_kendra_paths$chain_wd,burnin = 300000)$chain
+inf_chain_debbink_linear <- load_infection_chains(location=linear_ic50_paths$chain_wd,burnin = 300000)$chain
+inf_chain_kendra_linear <- load_infection_chains(location=linear_kendra_paths$chain_wd,burnin = 300000)$chain
 
 inf_chains <- list(inf_debbink_exp=inf_chain_debbink_exp,
                    inf_kendra_exp=inf_chain_kendra_exp,
@@ -140,5 +184,5 @@ p_ars_compare <- ggplot(ars_weighted) +
   scale_color_manual(name="Model assumptions",values=c("Debbink, exponential"=colors[1],"Kendra, exponential"=colors[2],"Debbink, linear"=colors[3],"Kendra, linear"=colors[4])) +
   scale_y_continuous(limits=c(0,1),breaks=seq(0,1,by=0.2))
 
-ggsave(p_ars_compare,filename=paste0("figures/incidence/attack_rates_weighted_all_scenarios.png"),width=7,height=4,dpi=300)
-ggsave(p_ars_compare,filename=paste0("figures/incidence/attack_rates_weighted_all_scenarios.pdf"),width=7,height=4,dpi=300)
+ggsave(p_ars_compare,filename=fig_incidence_file("attack_rates_weighted_all_scenarios.png"),width=7,height=4,dpi=300)
+ggsave(p_ars_compare,filename=fig_incidence_file("attack_rates_weighted_all_scenarios.pdf"),width=7,height=4,dpi=300)

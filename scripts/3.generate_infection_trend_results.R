@@ -1,5 +1,6 @@
-## Modified by AI assistant on 2026-07-22 using GPT-5. Updated model output
-## paths to use obs_ver_3 folder naming for spike-and-slab observation models.
+## Modified by AI assistant on 2026-07-22 using GPT-5. Updated model-dependent
+## output paths to use local_data/results/figures scenario-family folders without
+## sim_type as a directory layer.
 ## Plot attack rates and compare to real data
 library(tidyverse)
 library(ggplot2)
@@ -10,17 +11,34 @@ library(RColorBrewer)
 
 setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/")
 source("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/code/adjust_age_distribution.R", echo=TRUE)
+source("code/scenario_paths.R")
+
+default_run_name <- "ic50_real"
+default_paths <- build_scenario_paths(
+  analysis_family = "model_versions",
+  waning_model = "exponential",
+  obs_ver = 3,
+  run_name = default_run_name
+)
+incidence_wd <- default_paths$incidence_wd
+infection_trends_wd <- default_paths$infection_trends_wd
+for(output_dir in c(incidence_wd, infection_trends_wd)) {
+  if(!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
+}
+fig_incidence_file <- function(...) file.path(incidence_wd, paste0(...))
+fig_infection_trends_file <- function(...) file.path(infection_trends_wd, paste0(...))
 
 ## Read in attack rates from ic50 Debbink scenario
-serosolver_ar <- read_csv("results_exponential_obs_ver_3/ic50_real_attack_rates.csv")
-inf_chains <- load_infection_chains(location="local_data_exponential_obs_ver_3/norovirus_true/chains/ic50_real/",burnin = 300000)
+serosolver_ar <- read_csv(file.path(default_paths$results_run_dir, paste0(default_run_name, "_attack_rates.csv")))
+inf_chains <- load_infection_chains(location=default_paths$chain_wd,burnin = 300000)
 
 ## Read in our data
 antibody_data <- read_csv("Data/titre_dat_norovirus_age_avidity.csv")
 age_distribution <- read_csv("Data/age_distribution_england.csv")
 
 file_ver <- "debbink_ic50"
-## Read in UKHSA reports per capita for children
+## Read in UKHSA reports
+## Note this is NOT PER CAPITA, this is cases per 1000 per year!!!
 real_dat <- read_csv("Data/noro_ukhsa_children.csv") %>% filter(year > 2000)
 
 ## ggplot 2 options
@@ -242,7 +260,7 @@ p_ar_raw <- ggplot(serosolver_ar %>% group_by(time) %>% summarize(mean=mean(V1),
   scale_x_continuous(breaks=seq(2001,2013,by=1)) +
   xlab("Norovirus year")
 
-ggsave(p_ar_raw,filename=paste0("figures/incidence/attack_rate_comparison_",file_ver,".png"),width=6,height=4,units="in",dpi=300)
+ggsave(p_ar_raw,filename=fig_incidence_file("attack_rate_comparison_",file_ver,".png"),width=6,height=4,units="in",dpi=300)
   
 ## Read in age distribution data from ONS
 age_distribution <- age_distribution %>% select(-Sex) %>% pivot_longer(-Age) %>%
@@ -316,7 +334,7 @@ overall_incidence <- bind_rows(res1,res2) %>% mutate("Cases per 1000 persons per
   mutate(Estimate = paste0(Estimate, " cases per 1000 persons per year (posterior median and 95% CrI)")) %>%
   pivot_wider(names_from=Estimate,values_from=`Cases per 1000 persons per year`)
 
-write_csv(overall_incidence,paste0("figures/incidence/overall_incidence_weighted_vs_unweighted_",file_ver,".csv"))
+write_csv(overall_incidence,fig_incidence_file("overall_incidence_weighted_vs_unweighted_",file_ver,".csv"))
 
 ## Plot attack rates over time, weighted vs. reweighted
 ars_unweighted <- inf_chain %>% group_by(samp_no,chain_no,time) %>% summarize(ar=sum(infected)/n(),N=n()) %>% group_by(time) %>% 
@@ -328,7 +346,7 @@ ars_comb <- bind_rows(ars_unweighted,ars_weighted)
 ars_comb %>% mutate("Incidence (per capita)" = paste0(signif(median,3)," (",signif(lower,3),"-",signif(upper,3),")")) %>%
   select(time,ver,`Incidence (per capita)`,N) %>% rename(`Year`=time,`Estimate`=ver) %>%
   pivot_wider(names_from=Estimate,values_from=`Incidence (per capita)`) %>%
-  write_csv(paste0("figures/incidence/annual_incidence_weighted_vs_unweighted_",file_ver,".csv"))
+  write_csv(fig_incidence_file("annual_incidence_weighted_vs_unweighted_",file_ver,".csv"))
 
 p_ars_compare <- ggplot(ars_comb) + 
   geom_rect(xmin=min(antibody_data$sample_time),xmax=max(antibody_data$sample_time),ymin=-Inf,ymax=0.9,fill="aliceblue",alpha=0.1) +
@@ -351,7 +369,7 @@ p_ars_compare <- ggplot(ars_comb) +
   scale_color_manual(name="AR estimate",values=c("Original data"=colors[2],"ONS census-weighted"=colors[3])) +
   scale_y_continuous(limits=c(0,1),breaks=seq(0,1,by=0.2))
 
-ggsave(p_ars_compare,filename=paste0("figures/incidence/attack_rate_comparison_weighted_vs_unweighted_",file_ver,".png"),width=6,height=4,units="in",dpi=300)
+ggsave(p_ars_compare,filename=fig_incidence_file("attack_rate_comparison_weighted_vs_unweighted_",file_ver,".png"),width=6,height=4,units="in",dpi=300)
 
 p_ars_weighted <- ggplot(ars_weighted) + 
   geom_rect(xmin=min(antibody_data$sample_time),xmax=max(antibody_data$sample_time),ymin=-Inf,ymax=0.9,fill="aliceblue",alpha=0.1) +
@@ -377,9 +395,9 @@ p_ars_weighted <- ggplot(ars_weighted) +
   scale_color_manual(name="AR estimate",values=c("Original data"=colors[2],"ONS census-weighted"=colors[3])) +
   scale_y_continuous(limits=c(0,1),breaks=seq(0,1,by=0.1))
 
-ggsave(p_ars_weighted,filename=paste0("figures/incidence/attack_rate_weighted",file_ver,".png"),width=6,height=4,units="in",dpi=300)
+ggsave(p_ars_weighted,filename=fig_incidence_file("attack_rate_weighted",file_ver,".png"),width=6,height=4,units="in",dpi=300)
 
-write_csv(ars_comb, file=paste0("figures/incidence/annual_attack_rates_weighted_vs_unweighted_",file_ver,".csv"))
+write_csv(ars_comb, file=fig_incidence_file("annual_attack_rates_weighted_vs_unweighted_",file_ver,".csv"))
 
 
 ## Plot attack rates over time and by age, weighted vs. reweighted
@@ -395,7 +413,7 @@ overall_incidence_by_age <- bind_rows(res1_age,res2_age) %>% mutate("Cases per 1
   mutate(Estimate = paste0(Estimate, " cases per 1000 persons per year (posterior median and 95% CrI)")) %>%
   pivot_wider(names_from=Estimate,values_from=`Cases per 1000 persons per year`)
 
-write_csv(overall_incidence_by_age,paste0("figures/incidence/overall_incidence_by_age_weighted_vs_unweighted_",file_ver,".csv"))
+write_csv(overall_incidence_by_age,fig_incidence_file("overall_incidence_by_age_weighted_vs_unweighted_",file_ver,".csv"))
 
 ars_weighted_age <- resampled %>% group_by(samp_no,chain_no,time,age_group_simple) %>% summarize(ar=sum(infected)/n())
 ars_weighted_summary_age <- ars_weighted_age %>% group_by(time,age_group_simple) %>% summarize(median=median(ar),lower=quantile(ar,0.025),upper=quantile(ar,0.975)) %>% mutate(ver="ONS census-weighted")
@@ -429,8 +447,8 @@ p_ars_age_compare <- ggplot(ars_summary_age_comb) +
   scale_y_continuous(limits=c(0,1),breaks=seq(0,1,by=0.2)) +
   facet_wrap(~paste0(age_group_simple, " years"),ncol=2)
 
-ggsave(p_ars_age_compare,filename=paste0("figures/incidence/attack_rate_comparison_by_age_weighted_vs_unweighted_",file_ver,".png"),width=7,height=8,units="in",dpi=300)
-ggsave(p_ars_age_compare,filename=paste0("figures/incidence/attack_rate_comparison_by_age_weighted_vs_unweighted_",file_ver,".pdf"),width=7,height=8,units="in",dpi=300)
+ggsave(p_ars_age_compare,filename=fig_incidence_file("attack_rate_comparison_by_age_weighted_vs_unweighted_",file_ver,".png"),width=7,height=8,units="in",dpi=300)
+ggsave(p_ars_age_compare,filename=fig_incidence_file("attack_rate_comparison_by_age_weighted_vs_unweighted_",file_ver,".pdf"),width=7,height=8,units="in",dpi=300)
 
 p_ars_age_weighted <- ggplot(ars_weighted_summary_age) + 
   geom_rect(xmin=min(antibody_data$sample_time),xmax=max(antibody_data$sample_time),ymin=-Inf,ymax=0.9,fill="aliceblue",alpha=0.1) +
@@ -456,7 +474,7 @@ p_ars_age_weighted <- ggplot(ars_weighted_summary_age) +
   scale_y_continuous(limits=c(0,1),breaks=seq(0,1,by=0.2)) +
   facet_wrap(~paste0(age_group_simple, " years"),ncol=2)
 
-ggsave(p_ars_age_weighted,filename=paste0("figures/incidence/attack_rate_comparison_by_age_weighted",file_ver,".png"),width=7,height=8,units="in",dpi=300)
+ggsave(p_ars_age_weighted,filename=fig_incidence_file("attack_rate_comparison_by_age_weighted",file_ver,".png"),width=7,height=8,units="in",dpi=300)
 
 ## Plot cumulative incidence over age
 ## All times
@@ -501,7 +519,7 @@ p_cumu_by_age_cohorts <- ggplot(inf_chain_cumulative_incidence_birth) +
   theme(strip.text=element_text(size=6))
 p_cumu_by_age_cohorts
 
-ggsave(p_cumu_by_age_cohorts,filename=paste0("figures/infection_trends/cumulative_mean_infections_by_age_and_birth_",file_ver,".png"),width=6,height=4,units="in",dpi=300)
+ggsave(p_cumu_by_age_cohorts,filename=fig_infection_trends_file("cumulative_mean_infections_by_age_and_birth_",file_ver,".png"),width=6,height=4,units="in",dpi=300)
 
 ## Looking at more finely resolved breakdown
 ## Break down cumulative infection histories by age at infection across individuals
@@ -555,7 +573,7 @@ p_when_infections <- ggplot(inf_chain_age_at_infection %>% filter(cumu_infection
   scale_fill_viridis_d() +
   theme_use +
   theme(legend.position="none")
-ggsave(p_when_infections,filename=paste0("figures/infection_trends/age_at_infection_distribution_",file_ver,".png"),width=4,height=6,units="in",dpi=300)
+ggsave(p_when_infections,filename=fig_infection_trends_file("age_at_infection_distribution_",file_ver,".png"),width=4,height=6,units="in",dpi=300)
 
 
 
@@ -571,8 +589,8 @@ p_total_infs <- ggplot(inf_totals_summary) + geom_histogram(aes(x=med_infections
   xlab("Total number of infections\n(posterior median)") +
   scale_y_continuous(expand=c(0,0),limits=c(0,300),breaks=seq(0,300,by=50)) +
   ylab("Count")
-write_csv(inf_totals_summary, file=paste0("figures/infection_trends/total_infections_per_person_",file_ver,".csv"))
-ggsave(p_total_infs,filename=paste0("figures/infection_trends/total_infections_per_person_",file_ver,".png"),width=4,height=3,units="in",dpi=300)
+write_csv(inf_totals_summary, file=fig_infection_trends_file("total_infections_per_person_",file_ver,".csv"))
+ggsave(p_total_infs,filename=fig_infection_trends_file("total_infections_per_person_",file_ver,".png"),width=4,height=3,units="in",dpi=300)
 
 inf_chain_cumu_summary <- inf_chain_cumu %>% 
   #filter(time > 2007) %>%
@@ -616,7 +634,7 @@ p_cumu_incidence_by_age <- ggplot() +
   labs(tag="A")
 p_cumu_incidence_by_age
 
-write_csv(inf_chain_cumu_summary, file=paste0("figures/incidence/cumulative_incidence_by_age_all_times_",file_ver,".csv"))
+write_csv(inf_chain_cumu_summary, file=fig_incidence_file("cumulative_incidence_by_age_all_times_",file_ver,".csv"))
 
 ## Raw incidence by age
 inf_chain_summary <- inf_chain %>% 
@@ -635,9 +653,9 @@ p_incidence_by_age <- ggplot(inf_chain_summary) +
   labs(tag="B") 
 
 p_incidence_by_age
-write_csv(inf_chain_summary %>% group_by(age) %>% summarize(med=median(prop),lower=quantile(prop,0.025),upper=quantile(prop,0.975),N=median(N)), file=paste0("figures/incidence/incidence_by_age_all_times_",file_ver,".csv"))
+write_csv(inf_chain_summary %>% group_by(age) %>% summarize(med=median(prop),lower=quantile(prop,0.025),upper=quantile(prop,0.975),N=median(N)), file=fig_incidence_file("incidence_by_age_all_times_",file_ver,".csv"))
 
-ggsave(p_cumu_by_age/p_incidence_by_age,filename=paste0("figures/incidence/cumulative_and_incidence_by_age_all_times_",file_ver,".png"),width=4,height=5,units="in",dpi=300)
+ggsave(p_cumu_by_age/p_incidence_by_age,filename=fig_incidence_file("cumulative_and_incidence_by_age_all_times_",file_ver,".png"),width=4,height=5,units="in",dpi=300)
 
 
 ## Just after 2007
@@ -658,7 +676,7 @@ p_cumu_by_age_2007 <- ggplot(inf_chain_cumu_summary_2007) +
   labs(tag="A")
 p_cumu_by_age_2007
 
-write_csv(inf_chain_cumu_summary_2007, file=paste0("figures/incidence/cumulative_incidence_by_age_2007+_,",file_ver,".csv"))
+write_csv(inf_chain_cumu_summary_2007, file=fig_incidence_file("cumulative_incidence_by_age_2007+_,",file_ver,".csv"))
 
 ## Raw incidence by age
 inf_chain_summary_2007 <- inf_chain %>% 
@@ -676,9 +694,9 @@ p_incidence_by_age_2007 <- ggplot(inf_chain_summary_2007) +
   scale_y_continuous(limits=c(0,0.45),breaks=seq(0,0.45,by=0.1)) +
   labs(tag="B")
 p_incidence_by_age_2007
-write_csv(inf_chain_summary_2007 %>% group_by(age) %>% summarize(med=median(prop),lower=quantile(prop,0.025),upper=quantile(prop,0.975),N=median(N)), file=paste0("figures/incidence/incidence_by_age_2007+_",file_ver,".csv"))
+write_csv(inf_chain_summary_2007 %>% group_by(age) %>% summarize(med=median(prop),lower=quantile(prop,0.025),upper=quantile(prop,0.975),N=median(N)), file=fig_incidence_file("incidence_by_age_2007+_",file_ver,".csv"))
 
-ggsave(p_cumu_by_age_2007/p_incidence_by_age_2007,filename=paste0("figures/incidence/cumulative_and_incidence_by_age_2007+_",file_ver,".png"),width=4,height=4,units="in",dpi=300)
+ggsave(p_cumu_by_age_2007/p_incidence_by_age_2007,filename=fig_incidence_file("cumulative_and_incidence_by_age_2007+_",file_ver,".png"),width=4,height=4,units="in",dpi=300)
 
 ## Plot spline of age at isolation
 antibody_data <- antibody_data %>% mutate(age_at_circulation = biomarker_id - birth)
@@ -717,7 +735,7 @@ p_incidence_all <- (p_ars_weighted + labs(tag="A") + theme(legend.position=c(0.8
   (p_cumu_by_age + labs(tag="C")) + 
   (p_incidence_by_age + labs(tag="B")) + 
   (p_cumu_incidence_by_age + labs(tag="D")) + plot_layout(ncol=2)
-ggsave(p_incidence_all,filename=paste0("figures/incidence/incidence_all_",file_ver,".png"),width=8,height=6,units="in",dpi=300)
-ggsave(p_incidence_all,filename=paste0("figures/incidence/incidence_all_",file_ver,".pdf"),width=8,height=6,units="in",dpi=300)                                                               
+ggsave(p_incidence_all,filename=fig_incidence_file("incidence_all_",file_ver,".png"),width=8,height=6,units="in",dpi=300)
+ggsave(p_incidence_all,filename=fig_incidence_file("incidence_all_",file_ver,".pdf"),width=8,height=6,units="in",dpi=300)                                                               
 
   

@@ -520,6 +520,7 @@ p_cumu_by_age_cohorts <- ggplot(inf_chain_cumulative_incidence_birth) +
 p_cumu_by_age_cohorts
 
 ggsave(p_cumu_by_age_cohorts,filename=fig_infection_trends_file("cumulative_mean_infections_by_age_and_birth_",file_ver,".png"),width=6,height=4,units="in",dpi=300)
+ggsave(p_cumu_by_age_cohorts,filename=fig_infection_trends_file("cumulative_mean_infections_by_age_and_birth_",file_ver,".pdf"),width=6,height=4,units="in",dpi=300)
 
 ## Looking at more finely resolved breakdown
 ## Break down cumulative infection histories by age at infection across individuals

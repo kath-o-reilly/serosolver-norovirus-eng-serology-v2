@@ -79,8 +79,8 @@ mcmc_pars <- c("save_block"=1000,
 #mcmc_pars <- c("save_block"=1000,
 #               "thin"=50,
 #               "thin_inf_hist"=250,
-#               "iterations"=50000,
-#               "adaptive_iterations"=20000)
+#               "iterations"=25000,
+#               "adaptive_iterations"=10000)
 
 cart_data <- read_in$cart[run_number]  #"Debbink" #"Kendra" #
 # analysis level
@@ -232,7 +232,7 @@ sampling_times <- unique(antibody_data$sample_time) #seq(samp_min, samp_max, by=
 ################################ 
 ## IMPORTANT
 ################################ 
-
+break
 if(cart_data == "debbink"){
   # read in this file
   antigenic_map <- read_csv(paste0(data_folder,"/","antigenic_map_hand.csv"))
@@ -299,7 +299,8 @@ par_tab[par_tab$names == "fp_rate","fixed"] <- fp_rate_fixed ##
 ################################ 
 ## This allows you to change prior on the probability of infection per year 
 ## These are the parameters of a beta distribution -- see rbeta(10000, infection_model_prior_shape1,infection_model_prior_shape2)
-par_tab[par_tab$names %in% c("infection_model_prior_shape1","infection_model_prior_shape2"),c("values")] <- c(1/2,1/2) ## Can also try c(1,1), or something informative. Just the parameters of a beta distribution which acts as the prior on the per-time attack rate.
+par_tab[par_tab$names %in% c("infection_model_prior_shape1","infection_model_prior_shape2"),c("values")] <- c(1/2, 1/2)#c(1/2,1/2) ## Can also try c(1,1), or something informative. Just the parameters of a beta
+par_tab[par_tab$names %in% c("wane_short","cr_long","cr_short"),c("upper_bound")] <- 1
 ################################ 
 
 ## Extends the parameter table for multiple observation types
@@ -334,6 +335,12 @@ if(analysis != "avidity"){
 } else {
   par_tab[par_tab$biomarker_group == 1 & par_tab$names %in% c("boost_long","cr_long"),"fixed"] <- 1
   par_tab[par_tab$biomarker_group == 1 & par_tab$names %in% c("boost_long","cr_long"),"values"] <- 0
+}
+
+
+if(obs_ver== 3 & cart_data == "kendra"){
+par_tab[par_tab$biomarker_group == 1 & par_tab$names %in% c("cr_long"),"fixed"] <- 1
+par_tab[par_tab$biomarker_group == 1 & par_tab$names %in% c("cr_long"),"values"] <- 0.09
 }
 
 ################################ 
@@ -823,6 +830,7 @@ ggsave(paste0(save_wd,"/inf_hists_cumulative.pdf"),p_inf_cumu,height=7,width=8,u
 
 ## Look at model-predicted observations against actual observations
 antibody_predictions <- plot_antibody_predictions(chains$theta_chain,chains$inf_chain,settings=serosolver_settings)
+saveRDS(antibody_predictions$p_hist_draws$data, file.path(save_wd, "antibody_prediction_histogram_draws_data.rds"))
 print(antibody_predictions$proportion_correct)
 p_preds <- antibody_predictions$p_pointrange
 ggsave(paste0(save_wd,"/predicted_observations.pdf"),p_preds,height=4,width=7,units="in",dpi=300)

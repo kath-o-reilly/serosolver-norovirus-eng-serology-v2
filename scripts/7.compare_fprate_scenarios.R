@@ -19,16 +19,16 @@ model_registry <- tibble::tribble(
   "fprate_0.02", "False-positive rate = 0.02", "exponential", 3, "spike-and-slab observation model", 0.02, "0.02", 300000, "#009E73"
 ) %>%
   mutate(
-    scenario_id = purrr::pmap_chr(
+    scenario_paths = purrr::pmap(
       list(waning_model, obs_ver, fp_rate),
-      ~build_scenario_id("fprate_scenarios", ..1, ..2, ..3)
+      ~build_scenario_paths("fprate_scenarios", ..1, ..2, analysis_name, fp_rate_set = ..3)
     ),
-    results_dir = file.path("results", "fprate_scenarios", scenario_id),
-    local_dir = file.path("local_data", "fprate_scenarios", scenario_id),
-    chain_dir = file.path(local_dir, "chains", analysis_name),
-    figures_dir = file.path(local_dir, "figures", analysis_name),
+    scenario_id = purrr::map_chr(scenario_paths, function(x) x$scenario_id),
+    results_run_dir = purrr::map_chr(scenario_paths, function(x) x$results_run_dir),
+    chain_dir = purrr::map_chr(scenario_paths, function(x) x$chain_wd),
+    figures_dir = purrr::map_chr(scenario_paths, function(x) x$save_wd),
     settings_file = file.path(chain_dir, paste0(analysis_name, "_serosolver_settings.RData")),
-    theta_file = file.path(results_dir, analysis_name, paste0(analysis_name, "_theta_chains.csv")),
+    theta_file = file.path(results_run_dir, paste0(analysis_name, "_theta_chains.csv")),
     out_res_file = file.path(figures_dir, "out_res.rda"),
     kinetics_file = NA_character_
   )
@@ -88,7 +88,8 @@ model_registry <- included_models %>%
   mutate(
     burnin = purrr::map2_dbl(theta_file, fallback_burnin, infer_burnin),
     model_label = as.character(model_label)
-  )
+  ) %>%
+  select(-scenario_paths)
 
 if (nrow(model_registry) == 0) {
   stop("No complete model outputs found for ", analysis_name, ".")

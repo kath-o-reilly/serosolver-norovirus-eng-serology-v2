@@ -178,7 +178,7 @@ p_ars_compare <- ggplot(ars_weighted) +
   ylab("Attack rate (infections per capita)") +
   xlab("Norovirus year") +
   theme_use +
-  theme(legend.position="bottom") +
+  theme(legend.position="bottom",legend.text=element_text(size=5)) +
   guides(fill="none") +
   coord_cartesian(xlim=c(2000,2013)) +
   scale_color_manual(name="Model assumptions",values=c("Debbink, exponential"=colors[1],"Kendra, exponential"=colors[2],"Debbink, linear"=colors[3],"Kendra, linear"=colors[4])) +

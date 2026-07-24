@@ -1,0 +1,8 @@
+Symbol,Meaning,Parameter estimate - exponential model - Debbink,Parameter estimate - exponential model - Kendra,Parameter estimate - linear model - Debbink,Parameter estimate - linear model - Kendra
+μ_long,Long-term antibody boosting,"1.48 (1.27, 1.72)","1.78 (1.48, 2.11)","1.42 (1.06, 1.79)","2.79 (2.51, 3.04)"
+μ_short,Short-term antibody boosting,"4.6 (4.3, 4.9)","4.07 (3.66, 4.47)","3.78 (3.36, 4.25)","3.1 (2.72, 3.47)"
+σ_long,Cross-reaction (retained),"1.81 (1.19, 2.56)","0.454 (0.292, 0.664)","0.108 (0.0864, 0.136)",NA
+σ_short,Cross reaction (acute),"0.0163 (0.00445, 0.0281)","0.0084 (0.000742, 0.024)","0.0043 (0.00013, 0.0151)","0.0544 (0.0312, 0.0758)"
+τ,"Immune imprinting, ie. proportion decrease in boost per successive infection","0.063 (0.0125, 0.122)","0.0602 (0.00969, 0.108)","0.0763 (0.0185, 0.15)","0.146 (0.103, 0.191)"
+ω,Acute waning,"0.5 (0.439, 0.562)","0.573 (0.483, 0.689)","0.397 (0.346, 0.465)","0.518 (0.485, 0.575)"
+ε,Standard deviation of the observation error distribution,"1.12 (1.07, 1.17)","1.13 (1.08, 1.18)","1.18 (1.12, 1.23)","1.12 (1.07, 1.17)"

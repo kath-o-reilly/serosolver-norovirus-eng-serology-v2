@@ -77,8 +77,8 @@ mcmc_pars <- c("save_block"=1000,
 #mcmc_pars <- c("save_block"=1000,
 #               "thin"=50,
 #               "thin_inf_hist"=250,
-#               "iterations"=50000,
-#               "adaptive_iterations"=20000)
+#               "iterations"=20000,
+#               "adaptive_iterations"=5000)
 
 cart_data <- read_in$cart[run_number]  #"Debbink" #"Kendra" #
 # analysis level
@@ -244,6 +244,8 @@ if(cart_data == "kendra"){
   print(head(antigenic_coords))
   antigenic_coords$Strain <- c(antigenic_coords$inf_times)
   
+  #antigenic_coords[antigenic_coords$inf_times == "2005",c("x_coord","y_coord")] <- c(1,4)
+  
   ggplot(antigenic_coords,aes(x=x_coord,y=y_coord,label=Strain)) + geom_point() + 
     geom_path() + geom_text()
   
@@ -329,6 +331,8 @@ if(analysis != "avidity"){
   par_tab[par_tab$biomarker_group == 1 & par_tab$names %in% c("boost_long","cr_long"),"values"] <- 0
 }
 
+par_tab[par_tab$names %in% c("cr_long"),"lower_start"] <- 1
+par_tab[par_tab$names %in% c("cr_long"),"upper_start"] <- 2
 ################################ 
 ## IMPORTANT
 ################################ 
@@ -600,6 +604,15 @@ p_pred_compare <- ggplot(tmp) +
   facet_wrap(~label,ncol=1)
 ggsave(paste0(save_wd,"/prediction_scatterplot.pdf"),p_pred_compare,height=3.5*n_obs_types,width=5,units="in",dpi=300)
 
+p_pred_compare_alt <-  ggplot(tmp) + 
+  geom_jitter(aes(x=measurement,y=median),alpha=0.5) + 
+  geom_abline(slope=1,intercept=0,linetype="dashed",col="red") +
+  xlab("Observed") +
+  ylab("Predicted (posterior median)") +
+  theme_bw() +
+  coord_cartesian(ylim=c(0,12),xlim=c(0,12))+
+  labs(tag="A")
+
 antibody_data_expanded <- expand_grid(serosolver_settings$antibody_data %>% select(individual,birth) %>% distinct(),
             sample_time=seq(min(serosolver_settings$antibody_data$birth),
                             max(serosolver_settings$antibody_data$sample_time),by=1),
@@ -812,9 +825,16 @@ ggsave(paste0(save_wd,"/inf_hists_cumulative.pdf"),p_inf_cumu,height=7,width=8,u
 
 ## Look at model-predicted observations against actual observations
 antibody_predictions <- plot_antibody_predictions(chains$theta_chain,chains$inf_chain,settings=serosolver_settings)
+saveRDS(antibody_predictions$p_hist_draws$data, file.path(save_wd, "antibody_prediction_histogram_draws_data.rds"))
 print(antibody_predictions$proportion_correct)
 p_preds <- antibody_predictions$p_pointrange
 ggsave(paste0(save_wd,"/predicted_observations.pdf"),p_preds,height=4,width=7,units="in",dpi=300)
+
+
+
+p_pred_obs_compare <- p_pred_compare_alt / (antibody_predictions$p_pointrange + labs(tag="B") + ggtitle("") + theme_bw() + theme(legend.position=c(0.2,0.8)))
+ggsave(paste0(save_wd,"/supp_fig_predictions.pdf"),p_pred_obs_compare,height=8,width=8,units="in",dpi=300)
+
 
 if(analysis == "both"){
 p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_data=expand_grid(individual=1,sample_time=seq(2001,2012,by=1),biomarker_id=unique(antibody_data$biomarker_id),biomarker_group=unique(antibody_data$biomarker_group)),demographics=NULL,settings=serosolver_settings,by_group=FALSE,nsamp=100,
@@ -933,18 +953,25 @@ p_estimated_model <- plot_estimated_antibody_model(chains$theta_chain,antibody_d
   ggsave(file.path(kinetics_wd, paste0("estimated_kinetics_", run_name, "_all.pdf")),p_kinetics_alt,height=5,width=6,units="in",dpi=300,create.dir=TRUE)
   save(p_kinetics_alt, file=file.path(kinetics_wd, paste0("estimated_kinetics_", run_name, "_all.rda")))
   
-  #antigenic_map <- read_csv(paste0(data_folder,"/","antigenic_map_hand.csv"))
-  #antigenic_map <- setup_antigenic_map(antigenic_map,n_biomarker_groups=n_obs_types,unique_biomarker_groups=1:n_obs_types)[[1]]
-  #antigenic_map1 <- antigenic_map %>% filter(inf_times >= 2001)
-  #serosolver_settings1 <- serosolver_settings
-  #serosolver_settings1$antigenic_map <- antigenic_map
-  #serosolver_settings1$possible_exposure_times <- unique(antigenic_map$inf_times)
+  PLOT_SCHEMATIC <- TRUE
+  if(PLOT_SCHEMATIC){
+    antigenic_map_new <- read_csv(paste0(data_folder,"/","antigenic_map_hand.csv"))
+    antigenic_map_new <- setup_antigenic_map(antigenic_map_new,n_biomarker_groups=n_obs_types,unique_biomarker_groups=1:n_obs_types)[[1]]
+    antigenic_map1 <- antigenic_map_new %>% filter(inf_times >= 2001)
+    serosolver_settings1 <- serosolver_settings
+    serosolver_settings1$antigenic_map <- antigenic_map_new
+    serosolver_settings1$possible_exposure_times <- unique(antigenic_map_new$inf_times)
+  } else {
+    serosolver_settings1 <- serosolver_settings
+  }
   p_estimated_model2 <- plot_estimated_antibody_model(chains$theta_chain,
                                                       antibody_data=expand_grid(individual=1,sample_time=seq(2001,2012,by=1),
-                                                                                biomarker_id=unique(antigenic_map$inf_times),
+                                                                                biomarker_id=unique(antigenic_map_new$inf_times),
                                                                                 biomarker_group=unique(antibody_data$biomarker_group)),
-                                                      demographics=NULL,settings=serosolver_settings,by_group=FALSE,nsamp=100,
-                                                      antigenic_map=antigenic_map,
+                                                      demographics=NULL,
+                                                      settings=serosolver_settings1,
+                                                      by_group=FALSE,nsamp=100,
+                                                      antigenic_map=antigenic_map_new,
                                                       solve_times=seq(2000,2012,by=1),
                                                       par_tab=par_tab %>% mutate(stratification=NA),
                                                       set_infections = c(2001,2010))

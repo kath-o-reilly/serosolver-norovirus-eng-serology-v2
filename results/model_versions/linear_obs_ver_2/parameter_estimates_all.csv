@@ -1,8 +1,0 @@
-Parameter,Data,Map,IC50
-Antigenic seniority parameter,ic50_real,Debbink,"0.225 (0.17, 0.283)"
-Long-term boost,ic50_real,Debbink,"3.18 (2.97, 3.36)"
-Long-term cross-reactivity gradient,ic50_real,Debbink,"0.0674 (0.0591, 0.0745)"
-Observation error (standard deviation),ic50_real,Debbink,"1.13 (1.08, 1.18)"
-Transient boost,ic50_real,Debbink,"2.47 (2.18, 2.81)"
-Transient cross-reactivity gradient,ic50_real,Debbink,"0.00832 (0.000203, 0.0328)"
-Transient waning rate,ic50_real,Debbink,"0.49 (0.357, 0.6)"

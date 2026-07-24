@@ -1,12 +1,11 @@
 ## Modified by AI assistant on 2026-07-24 using GPT-5. This script mirrors the
-## prior plotting workflow, compares exponential versus linear cross-reactivity
-## decline over antigenic distance, and optionally overlays posterior draws.
+## prior plotting workflow and uses repository-root-relative paths.
 library(tidyverse)
 library(ggplot2)
 library(patchwork)
 library(serosolver)
 
-setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/")
+project_dir <- normalizePath(getwd())
 source("code/simulate_priors.R")
 source("code/scenario_paths.R")
 

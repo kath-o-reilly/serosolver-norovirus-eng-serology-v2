@@ -1,10 +1,9 @@
-## Created by AI assistant on 2026-07-23 using GPT-5. Reads saved posterior
-## predictive histogram data and compares exponential obs-ver-2 versus obs-ver-3
-## IC50 predictions in a small faceted figure.
+## Created and modified by AI assistant through 2026-07-24 using GPT-5. Reads
+## saved posterior predictive data and uses repository-root-relative paths.
 library(tidyverse)
 library(ggplot2)
 
-setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2")
+project_dir <- normalizePath(getwd())
 source("code/scenario_paths.R")
 
 run_name <- "ic50_real"

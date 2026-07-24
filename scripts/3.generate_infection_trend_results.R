@@ -1,6 +1,5 @@
-## Modified by AI assistant on 2026-07-22 using GPT-5. Updated model-dependent
-## output paths to use local_data/results/figures scenario-family folders without
-## sim_type as a directory layer.
+## Modified by AI assistant on 2026-07-24 using GPT-5. Updated model-dependent
+## output paths and removed hard-coded local project paths.
 ## Plot attack rates and compare to real data
 library(tidyverse)
 library(ggplot2)
@@ -9,8 +8,8 @@ library(data.table)
 library(patchwork)
 library(RColorBrewer)
 
-setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/")
-source("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/code/adjust_age_distribution.R", echo=TRUE)
+project_dir <- normalizePath(getwd())
+source(file.path(project_dir, "code", "adjust_age_distribution.R"), echo=TRUE)
 source("code/scenario_paths.R")
 
 default_run_name <- "ic50_real"

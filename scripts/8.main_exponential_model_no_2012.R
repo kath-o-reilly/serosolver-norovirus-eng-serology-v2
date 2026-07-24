@@ -1,6 +1,6 @@
-## Created by AI assistant on 2026-07-22 using GPT-5. Copied from the main
-## exponential workflow to run the obs-ver-3 no-2012 sensitivity analysis.
-setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2")
+## Created and modified by AI assistant through 2026-07-24 using GPT-5.
+## Runs the obs-ver-3 no-2012 sensitivity from the repository root.
+project_dir <- normalizePath(getwd())
 obs_ver <- 3
 fp_rate_set <- 0.001
 fp_rate_fixed <- 1

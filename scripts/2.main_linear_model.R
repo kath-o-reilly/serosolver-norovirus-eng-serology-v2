@@ -1,6 +1,6 @@
-## Modified by AI assistant on 2026-07-22 using GPT-5. Set the default linear
-## model workflow to obs_ver 3 for spike-and-slab observation-model outputs.
-setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2")
+## Modified by AI assistant on 2026-07-24 using GPT-5. Set the default linear
+## model workflow to obs_ver 3 and removed the hard-coded local project path.
+project_dir <- normalizePath(getwd())
 
 
 ## Kendra and Debbink maps

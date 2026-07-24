@@ -1,6 +1,5 @@
-## Modified by AI assistant on 2026-07-22 using GPT-5. Updated output paths
-## to use local_data/results/figures scenario-family folders without sim_type
-## as a directory layer.
+## Modified by AI assistant on 2026-07-24 using GPT-5. Updated output paths
+## and removed hard-coded local project/serosolver development paths.
 ######################################################
 ## Author: James Hay & Kath O'Reilly
 ## Date: 10 Jun 2025
@@ -23,10 +22,9 @@ library(RColorBrewer)
 ## Load serosolver locally, or load as proper package after installation
 #Rcpp::compileAttributes("~/Documents/GitHub/serosolver")
 #devtools::document("~/Documents/GitHub/serosolver")
-devtools::load_all("~/Documents/GitHub/serosolver")
+#devtools::load_all("~/Documents/GitHub/serosolver")
 #install.packages("~/Documents/GitHub/serosolver", repos=NULL, type="source")
 #devtools::install_github("seroanalytics/serosolver")
-#library(serosolver)
 
 mutate <- dplyr::mutate
 filter <- dplyr::filter
@@ -35,8 +33,8 @@ rename <- dplyr::rename
 summarize <- dplyr::summarize
 
 
-## Set working directly locally and create a directory to store the MCMC chains in
-setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2")
+## Use the repository root as the working directory.
+project_dir <- normalizePath(getwd())
 source("code/simulate_priors.R")
 source("code/scenario_paths.R")
 # load in csv for script options
@@ -61,7 +59,7 @@ save_wd <- scenario_paths$save_wd
 save_wd_results <- scenario_paths$results_prefix
 kinetics_wd <- scenario_paths$kinetics_wd
 model_schematic_wd <- scenario_paths$model_schematic_wd
-data_folder = "~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/Data/"
+data_folder <- file.path(project_dir, "Data")
 
 
 for(output_dir in c(main_wd, save_wd, dirname(save_wd_results), chain_wd, kinetics_wd, model_schematic_wd)) {
@@ -87,7 +85,7 @@ cart_data <- read_in$cart[run_number]  #"Debbink" #"Kendra" #
 analysis <- read_in$data[run_number]
 
 # load data
-antibody_data <- read_csv(paste0(data_folder,"titre_dat_norovirus_age_avidity.csv"))
+antibody_data <- read_csv(file.path(data_folder, "titre_dat_norovirus_age_avidity.csv"))
 antibody_data <- as.data.frame(antibody_data)
 antibody_data_keep <- antibody_data
 antibody_data <- antibody_data %>% select(-age,-Date) 
@@ -235,7 +233,7 @@ sampling_times <- unique(antibody_data$sample_time) #seq(samp_min, samp_max, by=
 break
 if(cart_data == "debbink"){
   # read in this file
-  antigenic_map <- read_csv(paste0(data_folder,"/","antigenic_map_hand.csv"))
+  antigenic_map <- read_csv(file.path(data_folder, "antigenic_map_hand.csv"))
   p1 <- ggplot(antigenic_map,aes(x=x_coord,y=y_coord,col=inf_times,label=inf_times)) + geom_line() +
     geom_point(,cex=2) +
     geom_label() +
@@ -247,7 +245,7 @@ if(cart_data == "kendra"){
   # read in this other file
   # and additional changes needed
   #antigenic_coords_path <- system.file("extdata", "fonville_map_approx.csv", package = "serosolver")
-  antigenic_coords <- read.csv(file = paste0(data_folder,"antigenic_map_kendra_edit.csv"), stringsAsFactors=FALSE)
+  antigenic_coords <- read.csv(file = file.path(data_folder, "antigenic_map_kendra_edit.csv"), stringsAsFactors=FALSE)
   print(head(antigenic_coords))
   antigenic_coords$Strain <- c(antigenic_coords$inf_times)
   

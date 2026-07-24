@@ -1,4 +1,6 @@
-setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2")
+## Modified by AI assistant on 2026-07-24 using GPT-5. Removed the hard-coded
+## local project path so this script runs from the repository root.
+project_dir <- normalizePath(getwd())
 
 ## Kendra and Debbink maps
 ## There are 6 rows total in the input table, the first 2 rows use the IC50 data for the two maps

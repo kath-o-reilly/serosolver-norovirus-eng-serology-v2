@@ -1,12 +1,12 @@
 ## Modified by AI assistant on 2026-07-24 using GPT-5. Moved the prior plotting
-## workflow into scripts/, restricted active prior trajectory plots to IC50, and
-## added an optional posterior overlay from selected model scenarios.
+## workflow into scripts/, added posterior overlays, and removed hard-coded
+## local project paths.
 library(tidyverse)
 library(ggplot2)
 library(patchwork)
 library(serosolver)
 
-setwd("~/Documents/GitHub/serosolver-norovirus-eng-serology-v2/")
+project_dir <- normalizePath(getwd())
 source("code/simulate_priors.R")
 source("code/scenario_paths.R")
 

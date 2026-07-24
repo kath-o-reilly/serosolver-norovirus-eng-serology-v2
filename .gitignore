@@ -1,8 +1,9 @@
-# Modified by AI assistant on 2026-07-22 using GPT-5. Added explicit ignore
-# coverage for archived raw local_data outputs.
+# Modified by AI assistant on 2026-07-24 using GPT-5. Added explicit ignore
+# coverage for local raw outputs and local-only figure artifacts.
 code/.DS_Store
 .DS_Store
 .Rhistory
+.Rproj*
 .DS_Store
 local_data/.DS_Store
 local_data/norovirus_test/.DS_Store
@@ -12,3 +13,4 @@ local_data/norovirus_true/figures/.DS_Store
 local_data*
 local_data_archive*
 figures/legacy_top_level_layout*
+figures/**/out_res.rda

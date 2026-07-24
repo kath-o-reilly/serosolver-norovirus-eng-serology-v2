@@ -1,7 +1,7 @@
 # Overview
 
 This repo provides the code and data for the paper [Estimation of Annual Exposures and Antibody Kinetics Against Norovirus GII.4
-Variants from English Serology Data, 2007-2012](https://www.medrxiv.org/). As of the 10-Mar-2026, this manuscript is under review and should appear as a pre-print in medrxiv very soon.
+Variants from English Serology Data, 2007-2012](https://www.medrxiv.org/). As of the 10-Mar-2026, this manuscript is under review and available on [medrxiv](https://www.medrxiv.org/content/10.64898/2026.03.09.26347737v1).
 
 The abstract of the manuscript is below:
 
@@ -15,7 +15,7 @@ The analysis presented in the paper consists of the following sub-sections, the 
 
 The norovirus variant serology were first reported in Lindesmith et al [(2023)](https://pubmed.ncbi.nlm.nih.gov/36854303/), and are provided as public data [here](https://zenodo.org/records/7547170).
 
-Plotting the serology by the "age of child at first virus isolation" is available in the script `code/3.generate_infection_trend_results.r` with the handle `p_ic50_seniority`. Within this file there are many exploratory plots.
+Plotting the serology by the "age of child at first virus isolation" is available in the script `scripts/3.generate_infection_trend_results.r` with the handle `p_ic50_seniority`. Within this file there are many exploratory plots.
 
 ### Norovirus variant dynamics and antibody cross-reactivity
 
@@ -37,3 +37,35 @@ The same process can be followed for the linear model `2.main_linear_model.r`. A
 
 
 
+## Current active workflow
+
+The main workflow scripts are in `scripts/`. To rerun post-MCMC summaries without refitting, set `rerun_mcmc <- FALSE` in the relevant main model script.
+
+- `scripts/1.main_exponential_model.R`: main exponential-waning model.
+- `scripts/2.main_linear_model.R`: main linear-waning model.
+- `scripts/3.generate_infection_trend_results.R`: infection-trend summaries and data figures.
+- `scripts/4.compare_all_attack_rates.R`: attack-rate comparisons across the main map/model scenarios.
+- `scripts/5.compare_model_versions.R`: comparison of model-version scenarios.
+- `scripts/6.main_exponential_model_fprate.R` and `scripts/7.compare_fprate_scenarios.R`: false-positive-rate sensitivity analyses.
+- `scripts/8.main_exponential_model_no_2012.R` and `scripts/9.compare_attack_rates_no_2012.R`: sensitivity analysis excluding 2012.
+- Supporting scripts produce formatted tables, prediction histograms, prior plots, and theta-chain loading checks.
+
+Scenario labels use the following conventions:
+
+- `obs_ver_2`: original observation model.
+- `obs_ver_3`: updated/spike-and-slab observation model.
+- `ic50_real`: Debbink antigenic map.
+- `ic50_kendra`: Kendra antigenic map.
+
+## Output folders
+
+Active scenario paths are centralized in `code/scenario_paths.R`.
+
+- `local_data/`: raw MCMC chains and local run objects. These are not intended for GitHub.
+- `results/`: summary CSV outputs intended for version control.
+- `figures/`: scripted figures, including data plots, prior plots, model versions, false-positive-rate scenarios, sensitivity analyses, and comparisons.
+- `final_figures/`: manually managed final manuscript figures.
+
+## AI-use note
+
+This repository has been updated with assistance from Codex, an AI coding assistant using GPT-5. The prompts were user-directed and specific, covering codebase navigation, workflow documentation, output-path refactoring, comparison scripts, plotting updates, and small diagnostic utilities. AI-assisted edits were substantive in the sense that they changed scripts and file organization, but the modelling aims, scenario definitions, scientific interpretation, and final decisions were directed and reviewed by the repository author.

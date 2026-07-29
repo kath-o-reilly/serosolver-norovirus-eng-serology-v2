@@ -98,6 +98,8 @@ tmp2$upper_ci <- colQuantiles(tboot$t,probs=0.975)
 # add in Pr(x=0) from the model
 tmp2$mod <- (1-0.2054)^tmp2$age
 
+plot(c(1:20),(1-0.2054)^c(1:20))
+
 p_nonresponder <- ggplot(tmp2,aes(x=as.factor(age),y=nonresp)) + geom_bar(stat="identity",fill="cornflowerblue") +
   geom_errorbar(aes(ymin=lower_ci,ymax=upper_ci),width=0.4) +
   geom_line(aes(x=age,y=mod),col="black",lwd=2) +

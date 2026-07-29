@@ -45,6 +45,10 @@ theme_use<- theme_classic() + theme(axis.text=element_text(size=6),
                                     axis.title=element_text(size=8),
                                     legend.title=element_text(size=6),legend.text=element_text(size=6),
                                     plot.tag=element_text(size=10,face="bold"))
+theme_use2<- theme_classic() + theme(axis.text=element_text(size=10),
+                                    axis.title=element_text(size=10),
+                                    legend.title=element_text(size=6),legend.text=element_text(size=6),
+                                    plot.tag=element_text(size=10,face="bold"))
 
 colors <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
@@ -73,6 +77,35 @@ antibody_data_tidy <- antibody_data %>% filter(biomarker_group ==1) %>%
   mutate(age = sample_time - birth) %>% 
   mutate(measurement=log2(measurement/5)) 
 antibody_data_tidy$strain <- norovirus_key[as.character(antibody_data_tidy$biomarker_id)]
+
+# explore the proportion of non-responders by age
+# first determine which indivs are non-responders
+# can bootstrap to get the confidence intervals
+tmp <- antibody_data_tidy %>% group_by(individual) %>% summarize(age=max(age),
+                                                                 respond=sum(measurement>0))
+tmp2 <- tmp %>% group_by(age) %>% summarize(nonresp=sum(respond==0)/n())
+
+library(boot)
+library(matrixStats)
+prop.function <- function(x, index) {
+  d <- x[index,]     # the shuffle
+  return(tapply(d$respond==0,d$age,mean))  # calculate the proportion that don't respond by age
+}
+tboot <- boot(data = tmp, statistic = prop.function, R=1000)
+tboot$t[1:10,]
+tmp2$lower_ci <- colQuantiles(tboot$t,probs=0.025)
+tmp2$upper_ci <- colQuantiles(tboot$t,probs=0.975)
+# add in Pr(x=0) from the model
+tmp2$mod <- (1-0.2054)^tmp2$age
+
+p_nonresponder <- ggplot(tmp2,aes(x=as.factor(age),y=nonresp)) + geom_bar(stat="identity",fill="cornflowerblue") +
+  geom_errorbar(aes(ymin=lower_ci,ymax=upper_ci),width=0.4) +
+  geom_line(aes(x=age,y=mod),col="black",lwd=2) +
+  xlab("Age (Years)") +
+  ylab("Proportion") +
+  theme_use2+
+  ggtitle("Proportion of non-responders by age")
+ggsave(p_nonresponder,filename=paste0("figures/data/non_resopnder_age.pdf"),width=8,height=6,units="in",dpi=300)
 
 ## Look at distribution of positive titres by age, time and birth year
 p_data_age <- ggplot(antibody_data_tidy %>% filter(measurement > 0)) +

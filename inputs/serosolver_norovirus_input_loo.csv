@@ -1,0 +1,6 @@
+﻿sim_number,cart,data,rho,output_name,sim_type,offset_params,restrictions_par,restrictions_value,blockade
+1,kendra,ic_50,no,ic50_real_default,norovirus_true,FALSE,NA,NA,NA
+2,kendra,ic_50,no,ic50_real_2002,norovirus_true,FALSE,NA,NA,2002
+3,kendra,ic_50,no,ic50_real_2006,norovirus_true,FALSE,NA,NA,2006
+4,kendra,ic_50,no,ic50_real_2009,norovirus_true,FALSE,NA,NA,2009
+5,kendra,ic_50,no,ic50_real_2012,norovirus_true,FALSE,NA,NA,2012

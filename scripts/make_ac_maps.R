@@ -19,9 +19,9 @@ head(dat1)
 dat1$names <- substr(dat1$ref,7,13)
 dat1$variant <- substr(dat1$names,1,2)
 dat1$year <- as.numeric(substr(dat1$names,4,7))
-dat1 <- dat1b[order(dat1b$year),]
-dat1b <- dat1 %>% filter(type == "AG")
 
+dat1b <- dat1 %>% filter(type == "AG")
+dat1 <- dat1b[order(dat1b$year),]
 # ---- Debbink data
 
 dat2 <- read_csv("Data/ac-debbink-only-04Jan22.csv")
@@ -97,19 +97,19 @@ cart_ken <- dat1b %>% filter(type == "AG") %>% group_by(var_col) %>% summarize(n
                                                                                y_coord = -(mean(y)-kdyf),
                                                                                year=mean(year))
 cart_ken <- cart_ken[order(cart_ken$year),]
-write.csv(cart_ken,paste0("Data/antigenic_map_kendra.csv"))
+write.csv(cart_ken,paste0("Data/antigenic_map_kendra_2026.csv"))
 
 dat1b$x_coord <- dat1b$x-kdxf
 dat1b$y_coord <- -(dat1b$y-kdyf)
 
 # check what these look like on the data
 p1b <- ggplot(dat1b,aes(x=x_coord,y=y_coord,color=var_col)) +
-  geom_point(size=3) +
+  geom_point(size=3,pch=1) +
   scale_color_manual(name = "variant",values = col2$Color) +
   #geom_path(linetype = "dashed",col="black") +
   geom_text(data=dat1b %>% filter(type=="AG"),aes(x=x-kdxf+1.2,y=-(y-kdyf),label=names)) +
   geom_path(data=cart_ken,aes(x=x_coord,y=y_coord,label=var_col),lty=2,col="black") + 
-  geom_point(data=cart_ken,aes(x=x_coord,y=y_coord,label=var_col),pch=5,size=3) +
+  geom_point(data=cart_ken,aes(x=x_coord,y=y_coord,label=var_col),pch=19,size=3) +
   #geom_path(linetype = "dashed",col="pink")
   ggtitle("Kendra data (all variants)") +
   scale_x_continuous(name = "Dimension 1", breaks = seq(-8,8,4), labels = seq(-8,8,4), limits = c(-6,9.5)) +
@@ -117,8 +117,9 @@ p1b <- ggplot(dat1b,aes(x=x_coord,y=y_coord,color=var_col)) +
   theme_bw() +
   theme(aspect.ratio=1)
   
+pdf("Results/kendra_ac_map_all_vars_2026.pdf",height=6,width=7)
 p1b
-
+dev.off()
 # output "antigenic_map_kendra_noro"
 # fields x_coord y_coord inf_times
 
